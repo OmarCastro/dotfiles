@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+################################
+# Shows current date
+#
+# @param {String} format: The format of the date
+# @return {Date}: Current date
+################################
+
+#dir=$(dirname $0)
+#source $dir/util.sh
+
+format=${BLOCK_INSTANCE:-"%Y-%m-%d"}
+
+case $BLOCK_BUTTON in
+	# right click: show packages
+	3)
+           pyqt_cal ${BLOCK_X} ${BLOCK_Y}; date +"$format"
+	;;
+esac
+
+date +"$format"
+date +"%m-%d"
