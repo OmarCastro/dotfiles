@@ -69,12 +69,12 @@ urxvt.color14:      #54ced6
 urxvt.color7:  #373b41
 urxvt.color15: #282a2e
 
-! Fonts
-URxvt.allow_bold:           false
-/* URxvt.font:                 -*-terminus-medium-r-normal-*-12-120-72-72-c-60-iso8859-1 */
-URxvt*font: xft:Monospace:pixelsize=14, xft:DejaVu Sans Mono for Powerline:pixelsize=14
-URxvt*boldFont: xft:Monospace:pixelsize=14
+! Fonts 
+urxvt*font: xft:Roboto Mono:pixelsize=13,\
+            xft:Roboto Mono for Powerline:pixelsize=13
 
+urxvt*boldFont: xft:Roboto Mono:pixelsize=13:style=Bold,\
+                xft:Roboto Mono for Powerline:pixelsize=13
 
 !-------------------------
 ! rofi configuration
