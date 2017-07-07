@@ -15,11 +15,9 @@ Xft.hintstyle:          hintslight
 ! urxvt configuration
 !-------------------------
 
-urxvt*background:       #1d1f21
+*background:       #1d1f21
 
-urxvt*foreground:       #c5c8c6
-urxvt*fading:           15
-urxvt*fadeColor:        #000000
+*foreground:       #c5c8c6
 
 !urxvt.transparent:   true
 !urxvt.tintColor:     white
@@ -38,36 +36,36 @@ urxvt*troughColor: #2d2f31
 urxvt.cursorColor:  #aeafad
 
 ! Black / Grey
-urxvt.color0:       #000000
-urxvt.color8:       #666666
+*color0:       #000000
+*color8:       #666666
 
 ! Red / Bright Red
-urxvt.color1:       #cc6666
-urxvt.color9:       #FF3334
+*color1:       #cc6666
+*color9:       #FF3334
 
 ! Green + Bright Green
-urxvt.color2:       #b5bd68
-urxvt.color10:      #9ec400
+*color2:       #b5bd68
+*color10:      #9ec400
 
 ! Yellow (Orange) + Bright Yellow (Yellow)
-urxvt.color3:       #de935f
-urxvt.color11:      #f0c674
+*color3:       #de935f
+*color11:      #f0c674
 
 ! Blue + Bright Blue
-urxvt.color4:       #81a2be
-urxvt.color12:      #81a2be
+*color4:       #81a2be
+*color12:      #81a2be
 
 ! Magenta (Purple) + Bright Magenta
-urxvt.color5:       #b294bb
-urxvt.color13:      #b777e0
+*color5:       #b294bb
+*color13:      #b777e0
 
 ! Cyan (Aqua) + Bright Cyan
-urxvt.color6:       #8abeb7
-urxvt.color14:      #54ced6
+*color6:       #8abeb7
+*color14:      #54ced6
 
 ! Light Grey (Selection) + White (Current Line)
-urxvt.color7:  #373b41
-urxvt.color15: #282a2e
+*color7:  #767676
+*color15: #d6d6d6
 
 ! Fonts 
 urxvt*font: xft:Roboto Mono:pixelsize=13,\
