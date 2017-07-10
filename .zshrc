@@ -1,13 +1,25 @@
+if [! -d "~/.dynamic-colors"]; then
+   git clone https://github.com/sos4nt/dynamic-colors ~/.dynamic-colors
+fi
+export PATH="$HOME/.dynamic-colors/bin:$PATH"
+source $HOME/.dynamic-colors/completions/dynamic-colors.zsh
+
 # Apply color theme dyanmically when using st
-if [ "$TERM" = "st-256color"  ]; then
-  printf '\x1b]4;7;%s\a' $(grep -oP 'foreground:\s+\K\S+' ~/.Xresources | head -1)
-  function setThemeInSt(){
-     grep -oP 'color[1-9][0-9]?:\s+\S+' ~/.Xresources | sed -r 's/color([0-9]*):/\1/' | awk '{printf "\x1b]4;"$1";"$2"\a"}'
-     printf '\x1b]4;7;%s\a\x1b]4;0;%s\a' $(grep -oP 'foreground:\s+\K\S+' ~/.Xresources | head -1) $(grep -oP 'background:\s+\K\S+' ~/.Xresources | head -1)
-  }
-  setThemeInSt
+if [ "$TERM" = "st-256color" ]; then
+  dynamic-colors switch solarized-dark
+  #printf '\x1b]4;7;%s\a' $(grep -oP 'foreground:\s+\K\S+' ~/.Xresources | head -1)
+  #function setThemeInSt(){
+  #   grep -oP 'color[1-9][0-9]?:\s+\S+' ~/.Xresources | sed -r 's/color([0-9]*):/\1/' | awk '{printf "\x1b]4;"$1";"$2"\a"}'
+  #   printf '\x1b]4;7;%s\a\x1b]4;0;%s\a' $(grep -oP 'foreground:\s+\K\S+' ~/.Xresources | head -1) $(grep -oP 'background:\s+\K\S+' ~/.Xresources | head -1)
+  #}
+  #setThemeInSt
   
 fi
+if [ "$TERM" = "stterm-256color"  ]; then
+  dynamic-colors switch solarized-dark
+fi
+
+
 
 source /home/omar/antigen.zsh
 

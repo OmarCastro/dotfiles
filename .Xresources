@@ -68,8 +68,9 @@ urxvt.cursorColor:  #aeafad
 *color15: #d6d6d6
 
 ! Fonts 
-urxvt*font: xft:Roboto Mono:pixelsize=13,\
-            xft:Roboto Mono for Powerline:pixelsize=13
+urxvt*font: \
+            xft:Roboto Mono for powerline:pixelsize=13,\
+            xft:Roboto Mono:pixelsize=13
 
 urxvt*boldFont: xft:Roboto Mono:pixelsize=13:style=Bold,\
                 xft:Roboto Mono for Powerline:pixelsize=13
