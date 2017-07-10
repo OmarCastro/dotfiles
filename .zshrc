@@ -1,6 +1,4 @@
-if [! -d "~/.dynamic-colors"]; then
-   git clone https://github.com/sos4nt/dynamic-colors ~/.dynamic-colors
-fi
+if [[ ! -d "~/.dynamic-colors" ]]; then git clone https://github.com/sos4nt/dynamic-colors ~/.dynamic-colors; fi
 export PATH="$HOME/.dynamic-colors/bin:$PATH"
 source $HOME/.dynamic-colors/completions/dynamic-colors.zsh
 
