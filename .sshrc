@@ -1,6 +1,26 @@
 #!/usr/bin/env bash
 
+# If not running interactively, don't do anything
+case $- in
+    *i*) ;;
+      *) return;;
+esac
+
 shopt -s autocd
+
+bind '"\e[A": history-search-backward'
+bind '"\e[B": history-search-forward'
+bind '"\eOA": history-search-backward'
+bind '"\eOB": history-search-forward'
+
+bind 'set show-all-if-ambiguous on'
+bind 'set menu-complete-display-prefix on'
+bind 'TAB: menu-complete'
+bind '"\e[Z":menu-complete-backward'
+bind 'set colored-completion-prefix on'
+bind 'set colored-stats on'
+bind 'set completion-ignore-case on'
+
 [ -r ~/.bashrc ] && source ~/.bashrc
 
 __powerline() {
@@ -109,44 +129,70 @@ __powerline() {
       esac
     fi
 
+    ps0(){
+        if [ "$BASH_COMMAND" != "ps1" ]; then
+            PS0time=$(date +%s%3N)
+        fi
+    }
+
     ps1() {
-	local RET="$?"
-	local PS1RHSTEXT="$USER@$HOSTNAME"
+        local RET="$?"
+        local TIMESTAMP="$(date +%s%3N)"
         local PS1L="$BG_BASE1$FG_BASE2 \w $RESET"    
         local TIME="$(date +%H:%M:%S)"
 
-	# Check the exit code of the previous command and display different
+        # get text duration text
+        local duration_PS1RHS=""
+        local duration_PS1RHS_stripped=""
+        if ! [ -z ${PS0time+x} ]; then
+            local EXEC_TIME="$(( TIMESTAMP - PS0time))"
+            unset PS0time
+
+            local timeMillis=$(( EXEC_TIME % 1000 ))
+            local timeSeconds=$(( (EXEC_TIME / 1000) % 60 ))
+            local timeMinutes=$(( EXEC_TIME / 60000 ))
+            local duration_text="$([[ $timeMinutes -eq "0" ]] && printf '%d.%03d' $timeSeconds $timeMillis || printf '%02d:%02d.%03d' $timeMinutes $timeSeconds $timeMillis)"
+            duration_text="$duration_text Dur"
+            duration_PS1RHS=" $FG_BASE2$BG_BASE2$FG_BASE3 $duration_text"
+            duration_PS1RHS_stripped="   $duration_text"
+        fi
+
+        # Check the exit code of the previous command and display different
         # colors in the prompt accordingly. 
         if [ $RET -eq 0 ]; then
             local BG_EXIT="$BG_GREEN"
-	    local FG_EXIT="$FG_GREEN"
-	    local RET_CODE="✓"
+            local FG_EXIT="$FG_GREEN"
+            local RET_CODE="✓"
         else
             local BG_EXIT="$BG_RED"
-	    local FG_EXIT="$FG_RED"
-	    local RET_CODE="$RET ↵"
+            local FG_EXIT="$FG_RED"
+            local RET_CODE="$RET ↵"
         fi
 
         PS1L+="$FG_BASE1$BG_EXIT$FG_BASE3 $PS_SYMBOL $RESET$FG_EXIT$RESET "
-	local PS1RHS="$FG_EXIT$BG_EXIT$FG_BASE3 $RET_CODE $FG_MAGENTA$BG_MAGENTA$FG_BASE3 $PS1RHSTEXT $FG_BASE4$BG_BASE4$FG_BASE2 $TIME "
-	#local PS1LHS="$BG_MAGENTA$FG_BASE3$PS1RHSTEXT $FG_MAGENTA$BG_BASE1"
-	
-	local PS1RHS_stripped=$(sed "s,\x1B\[[0-9;]*[a-zA-Z],,g" <<<" $RET_CODE   $PS1RHSTEXT   $TIME ")  
+	    local PS1RHS="$FG_EXIT$BG_EXIT$FG_BASE3 $RET_CODE$duration_PS1RHS $FG_BASE3$BG_BASE3$FG_BASE2 $TIME "
+        #local PS1LHS="$BG_MAGENTA$FG_BASE3$PS1RHSTEXT $FG_MAGENTA$BG_BASE1"
+        local PS1LHS=""
+        local PS1RHS_stripped=$(sed "s,\x1B\[[0-9;]*[a-zA-Z],,g" <<<" $RET_CODE$duration_PS1RHS_stripped   $TIME ")  
+    
+        # Reference: https://en.wikipedia.org/wiki/ANSI_escape_code
+        local Save='\e[s' # Save cursor position
+        local Rest='\e[u' # Restore cursor to save point
 
-	# Reference: https://en.wikipedia.org/wiki/ANSI_escape_code
-	local Save='\e[s' # Save cursor position
-	local Rest='\e[u' # Restore cursor to save point
-
-	PS1="\[${Save}\e[${COLUMNS}C\e[${#PS1RHS_stripped}D${PS1RHS}${Rest}\]$RESET...\n"
-	#PS1=$PS1LHS
-	PS1+="$PS1L"
+        PS1="\[${Save}\e[${COLUMNS}C\e[${#PS1RHS_stripped}D${PS1RHS}${Rest}\]$RESET"
+        PS1+="$PS1LHS\n"
+        PS1+="$PS1L"
     }
 
     PROMPT_COMMAND=ps1
 }
+
 __powerline
 unset __powerline
 
-
 alias poweroff="echo you are running a SSH session, careful there"
 alias reboot="echo you are running a SSH session, careful there"
+alias halt="echo you are running a SSH session, careful there"
+alias shutdown="echo you are running a SSH session, careful there"
+
+trap "ps0" DEBUG
