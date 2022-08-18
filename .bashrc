@@ -8,13 +8,6 @@ if [ ! -d ~/.local/share/dotfiles/dynamic-colors ]; then git clone https://githu
 export PATH="$HOME/bin:$HOME/.local/share/dotfiles/dynamic-colors/bin:$PATH"
 source $HOME/.local/share/dotfiles/dynamic-colors/completions/dynamic-colors.bash
 
-# Add sysntax highlighting to bash terminal
-if [ ! -d ~/.local/share/dotfiles/blesh ]; then
-  mkdir -p ~/.local/share/dotfiles/blesh
-  curl -L https://github.com/akinomyoga/ble.sh/releases/download/nightly/ble-nightly.tar.xz | tar xJf - --strip-components=1 -C  ~/.local/share/dotfiles/blesh
-fi
-source  ~/.local/share/dotfiles/blesh/ble.sh
-	
 # Apply color theme dyanmically when using st
 if [ "$TERM" = "st-256color" ]; then
   dynamic-colors switch solarized-dark
@@ -150,18 +143,26 @@ if ! shopt -oq posix; then
   fi
 fi
 
-
-for f in ~/bash_envs/*/bashrc
-do
-  source $f
-done 
+# source additional bashrc for each environment
+if [ ! -d ~/bash_envs ]
+  for f in ~/bash_envs/*/bashrc
+  do
+    source $f
+  done 
+if
 
 bind '"\e[A": history-search-backward'
 bind '"\e[B": history-search-forward'
 bind '"\eOA": history-search-backward'
 bind '"\eOB": history-search-forward'
+
 bind 'set show-all-if-ambiguous on'
-bind 'TAB:menu-complete'
+bind 'set menu-complete-display-prefix on'
+bind 'TAB: menu-complete'
+bind 'set colored-completion-prefix on'
+bind 'set colored-stats on'
+bind 'set completion-ignore-case on'
+
 
 __powerline() {
 
@@ -269,12 +270,31 @@ __powerline() {
       esac
     fi
 
+    ps0(){
+        PS0='\[${PS1:$((PS0time=$(date +%s%3N), 0)):0}\]'
+    }
+
     ps1() {
         local RET="$?"
-        local bold=$(tput bold)
-        local normal=$(tput sgr0)
+        local TIMESTAMP="$(date +%s%3N)"
         local PS1L="$BG_BASE1$FG_BASE2 \w $RESET"    
         local TIME="$(date +%H:%M:%S)"
+
+        # get text duration text
+        local duration_PS1RHS=""
+        local duration_PS1RHS_stripped=""
+        if ! [ -z ${PS0time+x} ]; then
+            local EXEC_TIME="$(( $(date +%s%3N) - PS0time))"
+            unset PS0time
+
+            local timeMillis=$(( EXEC_TIME % 1000 ))
+            local timeSeconds=$(( (EXEC_TIME / 1000) % 60 ))
+            local timeMinutes=$(( EXEC_TIME / 60000 ))
+            local duration_text="$([[ $timeMinutes -eq "0" ]] && printf '%d.%03d' $timeSeconds $timeMillis || printf '%02d:%02d.%03d' $timeMinutes $timeSeconds $timeMillis)"
+            duration_text="$duration_text Dur"
+            duration_PS1RHS=" $FG_BASE2$BG_BASE2$FG_BASE3 $duration_text"
+            duration_PS1RHS_stripped="   $duration_text"
+        fi
 
         # Check the exit code of the previous command and display different
         # colors in the prompt accordingly. 
@@ -289,10 +309,10 @@ __powerline() {
         fi
 
         PS1L+="$FG_BASE1$BG_EXIT$FG_BASE3 $PS_SYMBOL $RESET$FG_EXIT$RESET "
-        local PS1RHS="$FG_EXIT$BG_EXIT$FG_BASE3 $RET_CODE $FG_BASE3$BG_BASE3$FG_BASE2 $TIME "
+	    local PS1RHS="$FG_EXIT$BG_EXIT$FG_BASE3 $RET_CODE$duration_PS1RHS $FG_BASE3$BG_BASE3$FG_BASE2 $TIME "
         #local PS1LHS="$BG_MAGENTA$FG_BASE3$PS1RHSTEXT $FG_MAGENTA$BG_BASE1"
         local PS1LHS=""
-        local PS1RHS_stripped=$(sed "s,\x1B\[[0-9;]*[a-zA-Z],,g" <<<" $RET_CODE   $TIME ")  
+        local PS1RHS_stripped=$(sed "s,\x1B\[[0-9;]*[a-zA-Z],,g" <<<" $RET_CODE$duration_PS1RHS_stripped   $TIME ")  
     
         # Reference: https://en.wikipedia.org/wiki/ANSI_escape_code
         local Save='\e[s' # Save cursor position
@@ -303,7 +323,7 @@ __powerline() {
         PS1+="$PS1L"
     }
 
-
+    ps0
     PROMPT_COMMAND=ps1
 }
 __powerline
