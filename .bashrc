@@ -1,22 +1,5 @@
 # .bashrc
 
-# Allow cd without writing "cd "
-shopt -s autocd
-
-# Allow to set color themes dynamically on terminal
-if [ ! -d ~/.local/share/dotfiles/dynamic-colors ]; then git clone https://github.com/sos4nt/dynamic-colors ~/.local/share/dotfiles/dynamic-colors; fi
-export PATH="$HOME/bin:$HOME/.local/share/dotfiles/dynamic-colors/bin:$PATH"
-source $HOME/.local/share/dotfiles/dynamic-colors/completions/dynamic-colors.bash
-
-# Apply color theme dyanmically when using st
-if [ "$TERM" = "st-256color" ]; then
-  dynamic-colors switch solarized-dark
-fi
-if [ "$TERM" = "xterm-256color"  ]; then
-  dynamic-colors switch solarized-dark
-fi
-
-
 # Source global definitions
 #if [ -f /etc/bashrc ]; then
 #	. /etc/bashrc
@@ -24,8 +7,6 @@ fi
 
 # Uncomment the following line if you don't like systemctl's auto-paging feature:
 # export SYSTEMD_PAGER=
-
-# User specific aliases and functions
 
 
 # ~/.bashrc: executed by bash(1) for non-login shells.
@@ -37,6 +18,40 @@ case $- in
     *i*) ;;
       *) return;;
 esac
+
+
+
+# only run tmux if requested, by setting START_TMUX_FROM_WD_CACHE to true when starting a terminal.
+if [ -z $TMUX ] && [ "$START_TMUX_FROM_WD_CACHE" == "True" ]; then
+  unset $START_TMUX_FROM_WD_CACHE
+  # tmux only puts true color if term is "xterm-256color"
+  export TERM="xterm-256color"
+  if tmux ls | grep -vq attached; then
+    dynamic-colors switch solarized-dark
+    tmux -2 attach-session -d
+  else
+    tmux -2 new-session \; setenv BASH_START_FROM_WD_CACHE True
+  fi
+  exit 0
+fi
+
+
+bash_theme_local="solarized-dark"
+bash_theme_ssh="solarized-dark-desaturated"
+
+shopt -s autocd
+
+# import dynamic-colors
+if [ ! -d ~/.dynamic-colors ]; then git clone https://github.com/sos4nt/dynamic-colors ~/.dynamic-colors; fi
+export PATH="$HOME/bin:$HOME/.dynamic-colors/bin:$PATH"
+source $HOME/.dynamic-colors/completions/dynamic-colors.bash
+
+
+# Apply color theme dyanmically when using a 256 or more colors terminal support
+if [[ $(tput colors) -ge 256 ]] 2>/dev/null; then
+  dynamic-colors switch $bash_theme_local
+fi
+
 
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
@@ -60,47 +75,6 @@ shopt -s checkwinsize
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
-# set variable identifying the chroot you work in (used in the prompt below)
-if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
-    debian_chroot=$(cat /etc/debian_chroot)
-fi
-
-# set a fancy prompt (non-color, unless we know we "want" color)
-case "$TERM" in
-    xterm-color) color_prompt=yes;;
-esac
-
-# uncomment for a colored prompt, if the terminal has the capability; turned
-# off by default to not distract the user: the focus in a terminal window
-# should be on the output of commands, not on the prompt
-#force_color_prompt=yes
-
-if [ -n "$force_color_prompt" ]; then
-    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-	# We have color support; assume it's compliant with Ecma-48
-	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-	# a case would tend to support setf rather than setaf.)
-	color_prompt=yes
-    else
-	color_prompt=
-    fi
-fi
-
-if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-fi
-unset color_prompt force_color_prompt
-
-# If this is an xterm set the title to user@host:dir
-case "$TERM" in
-xterm*|rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-    ;;
-*)
-    ;;
-esac
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
@@ -143,13 +117,12 @@ if ! shopt -oq posix; then
   fi
 fi
 
-# source additional bashrc for each environment
-if [ ! -d ~/bash_envs ]
-  for f in ~/bash_envs/*/bashrc
-  do
+# source additional bashrc for each environment (e.g. work environment)
+if [ -d ~/bash_envs ]; then
+  for f in ~/bash_envs/*/bashrc; do
     source $f
   done 
-if
+fi
 
 bind '"\e[A": history-search-backward'
 bind '"\e[B": history-search-forward'
@@ -159,6 +132,7 @@ bind '"\eOB": history-search-forward'
 bind 'set show-all-if-ambiguous on'
 bind 'set menu-complete-display-prefix on'
 bind 'TAB: menu-complete'
+bind '"\e[Z":menu-complete-backward'
 bind 'set colored-completion-prefix on'
 bind 'set colored-stats on'
 bind 'set completion-ignore-case on'
@@ -273,7 +247,6 @@ __powerline() {
     ps0(){
         PS0='\[${PS1:$((PS0time=$(date +%s%3N), 0)):0}\]'
     }
-
     ps1() {
         local RET="$?"
         local TIMESTAMP="$(date +%s%3N)"
@@ -284,7 +257,7 @@ __powerline() {
         local duration_PS1RHS=""
         local duration_PS1RHS_stripped=""
         if ! [ -z ${PS0time+x} ]; then
-            local EXEC_TIME="$(( $(date +%s%3N) - PS0time))"
+            local EXEC_TIME="$(( TIMESTAMP - PS0time))"
             unset PS0time
 
             local timeMillis=$(( EXEC_TIME % 1000 ))
@@ -318,13 +291,45 @@ __powerline() {
         local Save='\e[s' # Save cursor position
         local Rest='\e[u' # Restore cursor to save point
 
-        PS1="\[${Save}\e[${COLUMNS}C\e[${#PS1RHS_stripped}D${PS1RHS}${Rest}\]$RESET"
-        PS1+="$PS1LHS\n"
-        PS1+="$PS1L"
+        PS1="\[${Save}\e[${COLUMNS}C\e[${#PS1RHS_stripped}D${PS1RHS}${Rest}\]$RESET$PS1LHS\n$PS1L"
     }
 
     ps0
     PROMPT_COMMAND=ps1
 }
+
+function __cache_working_directory() {
+  function __cache_wd_aux() {
+    mkdir -p ~/.cache/.bashrc.d
+    pwd > ~/.cache/.bashrc.d/cwd
+    }
+
+    if [[ -r ~/.cache/.bashrc.d/cwd ]]; then
+        cd $(cat ~/.cache/.bashrc.d/cwd)
+    fi
+    PROMPT_COMMAND="$PROMPT_COMMAND;__cache_wd_aux"
+}
+
+ssh(){
+  local executable="ssh"
+  local sshrc_home=${SSHHOME:=~}
+
+  # if there is a .sshrc and sshrc is installed use it instead
+  if [ -r $sshrc_home/.sshrc ] && command -v sshrc &> /dev/null; then
+    executable="sshrc"
+  fi
+
+  command "$executable" -o "PermitLocalCommand yes" -o "Localcommand dynamic-colors switch $bash_theme_ssh" "$@"
+  local return_code=$?
+  dynamic-colors switch $bash_theme_local
+  return $return_code
+}
+
 __powerline
 unset __powerline
+
+# only use working_directory caching on tmux
+if [ ! -z "${TMUX}" ] && tmux show-environment BASH_START_FROM_WD_CACHE > /dev/null; then
+    __cache_working_directory
+fi
+unset __cache_working_directory
