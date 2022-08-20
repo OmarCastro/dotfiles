@@ -19,23 +19,6 @@ case $- in
       *) return;;
 esac
 
-
-
-# only run tmux if requested, by setting START_TMUX_FROM_WD_CACHE to true when starting a terminal.
-if [ -z $TMUX ] && [ "$START_TMUX_FROM_WD_CACHE" == "True" ]; then
-  unset $START_TMUX_FROM_WD_CACHE
-  # tmux only puts true color if term is "xterm-256color"
-  export TERM="xterm-256color"
-  if tmux ls | grep -vq attached; then
-    dynamic-colors switch solarized-dark
-    tmux -2 attach-session -d
-  else
-    tmux -2 new-session \; setenv BASH_START_FROM_WD_CACHE True
-  fi
-  exit 0
-fi
-
-
 bash_theme_local="solarized-dark"
 bash_theme_ssh="solarized-dark-desaturated"
 
@@ -50,6 +33,19 @@ source $HOME/.dynamic-colors/completions/dynamic-colors.bash
 # Apply color theme dyanmically when using a 256 or more colors terminal support
 if [[ $(tput colors) -ge 256 ]] 2>/dev/null; then
   dynamic-colors switch $bash_theme_local
+fi
+
+# only run tmux if requested, by setting START_TMUX_FROM_WD_CACHE to true when starting a terminal.
+if [ -z $TMUX ] && [ "$START_TMUX_FROM_WD_CACHE" == "True" ]; then
+  unset $START_TMUX_FROM_WD_CACHE
+  # tmux only puts true color if term is "xterm-256color"
+  export TERM="xterm-256color"
+  if tmux ls | grep -vq attached; then
+    tmux -2 attach-session -d
+  else
+    tmux -2 new-session \; setenv BASH_START_FROM_WD_CACHE True
+  fi
+  exit 0
 fi
 
 
