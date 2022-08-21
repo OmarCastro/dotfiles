@@ -265,5 +265,5 @@ bar {
 	strip_workspace_numbers yes
 	font pango:Roboto Mono, DejaVu Sans Mono, Awesome 8	
 	position bottom 
-        status_command SCRIPT_DIR=~/.i3/i3blocks/scripts/ ~/.i3/i3blocks/i3blocks -c ~/.i3/i3blocks/i3blocks.conf
+        status_command SCRIPT_DIR=~/.i3/i3blocks/scripts/ ~/.i3/i3blocks/i3blocks -c ~/.i3/i3blocks/i3blocks.conf | ~/.i3/i3blocks/status-scripts/set-powerline-separators.py
 }
