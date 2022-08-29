@@ -1,0 +1,6 @@
+[submodule ".i3/blocklets/i3blocklet-pipewire-source"]
+	path = .i3/blocklets/i3blocklet-pipewire-source
+	url = https://github.com/OmarCastro/i3blocklet-pipewire-source.git
+[submodule ".i3/blocklets/i3blocklet-pipewire-sink"]
+	path = .i3/blocklets/i3blocklet-pipewire-sink
+	url = https://github.com/OmarCastro/i3blocklet-pipewire-sink.git
