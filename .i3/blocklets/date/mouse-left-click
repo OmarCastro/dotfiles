@@ -1,0 +1,14 @@
+#! /bin/sh
+year=$(date '+%Y')
+month=$(date '+%m')
+date=$(date '+%A, %d %B')
+
+CONTENT="$date
+
+$(cal --color=always $month $year \
+    | sed 's/\x1b\[[7;]*m/\<span background="#FFFFFF" color="#262626"\>\<b\>/g' \
+    | sed 's/\x1b\[[27;]*m/\<\/b\>\<\/span\>/g' \
+    | tail -n +2)"
+
+rofi -e "$CONTENT" -markup -theme "omar-message" -m -3 -theme-str '#window {anchor:southeast; width:23ch;}'
+

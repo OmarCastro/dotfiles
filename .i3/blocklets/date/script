@@ -1,0 +1,16 @@
+#! /bin/sh
+
+
+case "$BLOCK_BUTTON" in
+    1) ( cd "$( dirname "${BASH_SOURCE[0]}" )" > /dev/null 2>&1 && setsid ./mouse-left-click ) > /dev/null  ;;
+    2) ( cd "$( dirname "${BASH_SOURCE[0]}" )" > /dev/null 2>&1 && setsid ./mouse-middle-click ) > /dev/null ;;
+    3) ( cd "$( dirname "${BASH_SOURCE[0]}" )" > /dev/null 2>&1 && setsid ./mouse-right-click ) > /dev/null;;
+esac
+
+DATEFTM="${DATEFTM:-+%a. %d %b. %Y}"
+SHORTFMT="${SHORTFMT:-+%d.%m.%Y}"
+LABEL="${LABEL:-}"
+blockdate=$(date "$DATEFTM")
+shortblockdate=$(date "$SHORTFMT")
+echo "$LABEL$blockdate"
+echo "$LABEL$shortblockdate"
