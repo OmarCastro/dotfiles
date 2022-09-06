@@ -7,3 +7,6 @@
 [submodule ".i3/blocklets/i3blocklet-time"]
 	path = .i3/blocklets/i3blocklet-time
 	url = https://github.com/OmarCastro/i3blocklet-time.git
+[submodule ".i3/blocklets/i3blocklet-randr-backlight"]
+	path = .i3/blocklets/i3blocklet-randr-backlight
+	url = https://github.com/OmarCastro/i3blocklet-randr-backlight.git
