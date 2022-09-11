@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+################################
+# Show core temperature 
+################################
+
+
+case $BLOCK_BUTTON in
+	# right click: show packages
+    1)
+CONTENT=$(find /sys/devices/platform/coretemp.0/hwmon/hwmon3 \
+          | grep "/temp" \
+          | cut -d "_" -f1 \
+          | sort | uniq \
+          | xargs -I % paste -d: %_label %_input \
+          | sed -e 's/...$/ ºC/' \
+          | column -t -s ':' -N unit,temp )
+let "WIDTH = $(wc -L <<< "$CONTENT") + 3"
+rofi \
+        -e "$(echo "$CONTENT" |  sed -r '1s|([^ ]+)|<b><u>\1</u></b>|g')" \
+        -markup \
+        -no-fullscreen \
+        -theme "omar-message" \
+        -hide-scrollbar \
+        -bw 2 \
+        -m -3 \
+        -theme-str '#window {anchor:southeast; location: northwest;}' \
+        -eh 1 \
+        -width -$WIDTH \
+        -no-custom \
+        -p "Temperature" > /dev/null 
+	;;
+esac
+
+v=$(cat /sys/bus/platform/devices/coretemp.0/hwmon/hwmon3/temp1_input)
+echo ${v::-3} "ºC"
+echo ${v::-3} "ºC"
