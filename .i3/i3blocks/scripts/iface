@@ -1,6 +1,5 @@
 #!/bin/bash
-# Copyright (C) 2014 Julien Bonjean <julien@bonjean.info>
-# Copyright (C) 2014 Alexander Keller <github@nycroth.com>
+# Copyright (C) 2022 Omar Castro <omar.castro.360@gmail.com>
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -31,11 +30,31 @@ fi
 [[ ! -d /sys/class/net/${IF} ]] && exit
 
 #------------------------------------------------------------------------
+case $BLOCK_BUTTON in
+  1)
+
+CONTENT=$( ip a \
+      | sed ':a;N;$!ba;s/\n  */;/g' \
+      | grep inet \
+      | sed -r -e "s|^[0-9]+: ([^:]+).*;inet ([^/]+).*;inet6 ([^/]+).*|\1;\2;\3|" -e "s|^[0-9]+: ([^:]+).*;inet6 ([^/]+).*|\1;;\2|" -e "s|^[0-9]+: ([^:]+).*;inet ([^/]+).*|\1;\2;|" \
+      | column -s ';' -t -R iface -N 'iface,IPv4,IPv6' \
+)
+let "WIDTH = $(wc -L <<< "$CONTENT") + 4"
+echo "$CONTENT" | tail +2 | rofi \
+      -dmenu \
+      -mesg "$(echo "$CONTENT" | head -n 1 |  sed -r '1s|([^ ]+)|<b><u>\1</u></b>|g')" \
+      -theme "omar-message" \
+      -m -3 \
+      -theme-str '#window {anchor:southeast;}' \
+      -width -$WIDTH \
+      -no-fixed-num-lines \
+      > /dev/null
+esac
+
 
 if [[ "$(cat /sys/class/net/$IF/operstate)" = 'down' ]]; then
   echo down # full text
   echo down # short text
-  echo \#FF0000 # color
   exit
 fi
 
@@ -51,8 +70,10 @@ esac
 # if no interface is found, use the first device with a global scope
 IPADDR=$(ip addr show $IF | perl -n -e "/$AF ([^\/]+).* scope global/ && print \$1 and exit")
 
+
 case $BLOCK_BUTTON in
-  3) echo -n "$IPADDR" | xclip -q -se c ;;
+  3) 
+    echo -n "$IPADDR" | xsel -b > /dev/null && rofi -e "copied to clipboard" -m -3 -width -21 -theme-str '#window {anchor:southeast;}' > /dev/null ;;
 esac
 
 #------------------------------------------------------------------------
