@@ -10,3 +10,6 @@
 [submodule ".i3/blocklets/i3blocklet-randr-backlight"]
 	path = .i3/blocklets/i3blocklet-randr-backlight
 	url = https://github.com/OmarCastro/i3blocklet-randr-backlight.git
+[submodule ".i3/blocklets/i3blocklet-wifi-network-manager"]
+	path = .i3/blocklets/i3blocklet-wifi-network-manager
+	url = https://github.com/OmarCastro/i3blocklet-wifi-network-manager.git
