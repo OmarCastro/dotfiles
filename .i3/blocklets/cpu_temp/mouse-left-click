@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+content=$(find /sys/devices/platform/coretemp.0/hwmon/hwmon* \
+          | grep "/temp" \
+          | cut -d "_" -f1 \
+          | sort | uniq \
+          | xargs -I % paste -d: %_label %_input \
+          | sed -e 's/...$/ ºC/' \
+          | column -t -s ':' -N unit,temp)
+
+width=$(( $(wc -L <<< "$content") + 3 ))
+
+rofi \
+-e "$(echo "$content" |  sed -r '1s|([^ ]+)|<b><u>\1</u></b>|g')" \
+-markup \
+-m -3 \
+-theme-str "#window {anchor:southeast; width: ${width}ch;}" \
+-p "Temperature" > /dev/null 
