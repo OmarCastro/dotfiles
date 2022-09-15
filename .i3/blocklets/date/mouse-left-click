@@ -1,7 +1,18 @@
-#! /bin/sh
+#!/bin/env bash
 year=$(date '+%Y')
 month=$(date '+%m')
 date=$(date '+%A, %d %B')
+
+rofi_optional_args=()
+rofi_window_rasi='width:23ch'
+
+if ! [[ -z "$rofi_theme" ]]; then
+	rofi_optional_args+=( -theme "$rofi_theme" )
+fi
+if ! [[ -z "$rofi_window_anchor" ]]; then
+    rofi_window_rasi="anchor:$rofi_window_anchor; $rofi_window_rasi"
+fi
+rofi_optional_args+=( -theme-str "#window {$rofi_window_rasi;}" )
 
 CONTENT="$date
 
@@ -10,5 +21,6 @@ $(cal --color=always $month $year \
     | sed 's/\x1b\[[27;]*m/\<\/b\>\<\/span\>/g' \
     | tail -n +2)"
 
-rofi -e "$CONTENT" -markup -theme "omar-message" -m -3 -theme-str '#window {anchor:southeast; width:23ch;}'
+echo "${rofi_optional_args[@]}"
+rofi -e "$CONTENT" -markup -m -3 "${rofi_optional_args[@]}"
 
