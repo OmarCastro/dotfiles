@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+#
+# Copyright 2022 Omar Castro <omar.castro.360@gmail.com>
+# Licensed under the terms of the GNU GPL v3, or any later version.
+#
+# This script calculates the CPU usage without requiring any external depenedency, like mpstat
+# it reads directly from /proc/stat and makes he necessary calculations
+# Show information of each CPU core on mouse left button click, by using rofi.
+
+unset LANG
+LC_ALL=C
+
+usageCPU=$(paste -d " " <(sleep 0.2; grep -P "cpu" /proc/stat) <(grep -P "cpu" /proc/stat) | awk '{ 
+  prevIdle=($16 + $17) ;
+  idle=($5 + $6) ;
+  prevNonIdle=($13 + $14 + $15 + $18 + $19 + $20) ;
+  nonIdle=($2 + $3 + $4 + $7 + $8 + $9) ;
+  prevTotal=( prevIdle + prevNonIdle );
+  total=( idle + nonIdle ) ;
+  totald=(total - prevTotal) ;
+  idled=(idle - prevIdle) ;
+  print $1 " " ((totald - idled)/totald*100) 
+}')
+totalCpuUsage=$(echo $usageCPU | cut -d" " -f 2 )
+usageToShow=$(printf "%.1f%%\n" $totalCpuUsage )
+
+case $BLOCK_BUTTON in
+	# right click: show packages
+    1)
+	  CONTENT=$(echo "$usageCPU" \
+		| sed 's/cpu /total /' \
+		| awk '/ / {printf("%s:%.1f %%\n",$1,$2)}' \
+		| column -t -s ':' -N 'unit,usage%')
+  HEADER=$(echo "$CONTENT" | head -n 1 | sed -r -e 's|([^ ]+)|<b><u>\1</u></b>|g' );
+  LIST=$(echo "$CONTENT" | tail -n +3);
+  TOTAL=$(echo "$CONTENT" | sed -n -r -e 's|([^ ]+)|<b>\1</b>|g' -e '2{p;q;}');
+    
+  let "WIDTH = $(wc -L <<< "$CONTENT") + 2"
+  rofi  \
+      -e "$TOTAL"$'\n'$'\n'"$HEADER"$'\n'"$LIST" \
+      -markup \
+      -m -3 \
+      -theme-str "#window {anchor:southeast; width: ${WIDTH}ch;}" \
+      -no-fixed-num-lines \
+      > /dev/null &
+	;;
+esac
+
+echo $usageToShow
+echo $usageToShow
+totalCpuUsageInt=${totalCpuUsage%.*}
+if (( $totalCpuUsageInt >= 70 )); then
+    echo "#f0c674"
+    echo "#dc322f"
+elif (( $totalCpuUsageInt >= 50 )); then
+    echo "#FFFFFF"
+    echo "#666600"
+fi
