@@ -5,7 +5,7 @@ import json
 # configurations start
 
 remove_1px_and_top_bottom_border=True
-separator_font_descriptions="Roboto Mono 13"
+separator_font_descriptions="Roboto Mono for Powerline 18"
 
 # configurations end
 
@@ -60,7 +60,7 @@ for line in sys.stdin:
                     'name':"powerline_separator",
                     'full_text': pango_separator_text,
                     'short_text': pango_separator_text,
-                    'separator_block_width': -1,
+                    'separator_block_width': -1
                 }
                 if 'background' in block:
                     separator_block['background'] = block['background']
@@ -70,6 +70,8 @@ for line in sys.stdin:
                     if 'background' in block and block['background'] == next_block['background']:
                         separator_block['full_text'] = pango_same_bg_separator_text
                         separator_block['short_text'] = pango_same_bg_separator_text
+                        if 'color' in block and 'color' in next_block and block['color'] == next_block['color']:
+                            separator_block['color'] = next_block['color']
                     else:
                         separator_block['color'] = next_block['background']
                 result.append(separator_block)
