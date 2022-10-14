@@ -43,6 +43,9 @@ bindsym $mod+d exec dmenu_run
 # installed.
 # bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
 
+bindsym --release Print exec import png:- | xclip -selection clipboard -t image/png
+
+
 # change focus
 bindsym $mod+j focus left
 bindsym $mod+k focus down
@@ -265,5 +268,5 @@ bar {
 	strip_workspace_numbers yes
 	font pango:Roboto Mono, DejaVu Sans Mono, Awesome 8	
 	position bottom 
-        status_command SCRIPT_DIR=~/.i3/i3blocks/scripts/ ~/.i3/i3blocks/i3blocks -c ~/.i3/i3blocks/i3blocks.conf | ~/.i3/i3blocks/status-scripts/set-powerline-separators.py
+        status_command SCRIPT_DIR=~/.i3/blocklets/ SCRIPT_DIR2=~/.i3/i3blocks/scripts/  i3blocks -c ~/.i3/i3blocks/i3blocks.conf | ~/.i3/i3blocks/status-scripts/set-powerline-separators.py
 }
