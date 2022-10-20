@@ -325,7 +325,7 @@ __powerline
 unset __powerline
 
 # only use working_directory caching on tmux
-if [ ! -z "${TMUX}" ] && tmux show-environment BASH_START_FROM_WD_CACHE > /dev/null; then
+if [ "$TERM_PROGRAM" = tmux  ] && tmux show-environment BASH_START_FROM_WD_CACHE > /dev/null; then
     __cache_working_directory
 fi
 unset __cache_working_directory
