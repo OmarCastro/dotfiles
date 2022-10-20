@@ -7,12 +7,12 @@ read -r -d '' CONFIG << EOM
      f     |  Firefox              |  firefox                   |  firefox
      g     |  Chromium             |  Chromium                  |  chromium
      e     |  Caja file manager    |  Caja                      |  caja
-     v     |  Visual Studio Code   |  Code                      |  code
-     i     |  Intellij IDEA        |  jetbrains-idea            |  ~/apps/idea-IU-203.6682.168/bin/idea.sh
+     v     |  Visual Studio Code   |  code-oss                  |  code
+     i     |  Intellij IDEA        |  jetbrains-idea            |  ~/apps/idea-IU-222.3739.54/bin/idea.sh
      u     |  Sublime Text         |  Subl                      |  subl
      t     |  Teams                |  Microsoft Teams - Preview |  teams
      p     |  Postman              |  Postman                   |  ~/apps/Postman/Postman
-     r     |  Rocket Chat          |  Rocket.Chat               |  rocketchat-desktop
+     r     |  Gather town          |  gathertown                |  gathertown
      m     |  Robo Mongo 3T        |  robo3t                    |  ~/apps/robo3t-1.2.1-linux-x86_64-3e50a65/bin/robo3t
      S     |  Spectacle            |  spectacle                 |  spectacle
 
