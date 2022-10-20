@@ -181,6 +181,11 @@ assign [class="Firefox"] $ws1
 
 assign [class="^URxvt$"] → $ws2
 for_window [class="^URxvt$"] focus child, border pixel 1, focus
+assign [class="SimpleTerminal"] → $ws2
+for_window [class="SimpleTerminal"] focus child, border pixel 1, focus
+
+
+
 
 for_window [class="Xfce4-notifyd"] floating enable
 for_window [class="Xfce4-notifyd"] border none
@@ -191,6 +196,7 @@ for_window [window_role="plugin_ui"] floating enable
 for_window [title="Menu Update"] floating enable
 for_window [title="___"] floating enable
 
+assign [class="jetbrains-idea"] → $ws6
 
 
 
@@ -229,10 +235,7 @@ mode "resize" {
 
 
 
-
-
-set $mode_launcher Focus or launch: [f]irefox [s]kype [g]oogle-chrome [d]olphin [i]ntellijIDEA [v]scode
-bindsym --release $mod+backslash exec sh ~/.i3/execs/rofi-focus-or-launch.sh 
+bindsym --release $mod+backslash exec sh ~/.i3/scripts/rofi-focus-or-launch.sh 
 
 set $mode_workspace_screen move workspace to output ◄ ▼ ▲ ►
 
