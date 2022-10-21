@@ -16,7 +16,7 @@
 
 TYPE="${BLOCK_INSTANCE:-mem}"
 
-awk -v type=$TYPE '
+exec awk -v type=$TYPE '
 /^MemTotal:/ {
 	mem_total=$2
 }
@@ -55,6 +55,7 @@ END {
 
 	# color
 	if (pct > 90) {
+		print("#FFFFFF")
 		print("#FF0000")
 	} else if (pct > 80) {
 		print("#FFAE00")
