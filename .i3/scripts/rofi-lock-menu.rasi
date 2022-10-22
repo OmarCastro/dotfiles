@@ -1,0 +1,71 @@
+* {
+  accent:           #ffbf00;
+  background:       #1c1c1c;
+  background-light: #1f1f1f;
+  background-focus: #282828;
+  foreground:       #888888;
+  foreground-list:  #bbbbbb;
+  on:               #44ad4d;
+  off:              #e34039;
+}
+
+
+* {
+  background-color: @background;
+  text-color: @foreground;
+  font: @icon-font;
+}
+#window {
+
+  height: 15em;
+  width: 100%;
+  border: @confirm-window-border;
+  border-color: @accent;
+
+  children: [ dummy, inputbar, dummy, horibox, dummy ];
+}
+
+
+#horibox {
+  children: [ listview ];
+  orientation: horizontal;
+}
+
+#hdummy {
+    margin: 3em;
+    expand: true;
+}
+
+#dummy {
+    expand: true;
+}
+
+#listview {
+   padding: 0 9.9%;
+  expand: true;
+  layout: horizontal;
+  spacing: 10%;
+  lines: 5;
+
+}
+#element {
+   width: 20%;
+   padding: 1em 1em;
+   background-color: @background-light;
+}
+
+#element.selected {
+  background-color: @accent;
+  text-color: @background;
+}
+
+
+#inputbar {
+  children: [ dummy, prompt, dummy ];
+}
+#prompt {
+  padding: 0.5em;
+  background-color: @accent;
+  text-color: @background-light;
+}
+

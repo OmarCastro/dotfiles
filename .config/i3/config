@@ -153,7 +153,7 @@ bindsym XF86MonBrightnessDown exec xbacklight -dec 20 # decrease screen brightne
 bindsym XF86TouchpadToggle exec /some/path/toggletouchpad.sh # toggle touchpad
 
 
-bindsym Control+mod1+l exec ~/.i3/i3lock-fancy/lock -p
+bindsym Control+mod1+l exec ~/.i3/scripts/rofi-lock-menu.sh 
 
 ########################
 #
@@ -164,6 +164,7 @@ bindsym Control+mod1+l exec ~/.i3/i3lock-fancy/lock -p
 exec_always --no-startup-id xsetroot -solid '#111111'
 exec --no-startup-id nm-applet
 exec --no-startup-id blueman-applet
+exec --no-startup-id xss-lock --transfer-sleep-lock ~/.i3/scripts/lock-screen.sh
 exec WorklogAssistant
 exec skype
 
