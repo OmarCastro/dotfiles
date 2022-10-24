@@ -175,10 +175,10 @@ exec skype
 #
 #############
 
-for_window [class="Firefox"] border pixel 0
-for_window [class="Firefox" instance="Dialog"] floating enable, border normal
-for_window [class="Firefox"] focus child, layout tabbed, focus
-assign [class="Firefox"] $ws1
+for_window [class="firefox"] border pixel 0
+for_window [class="firefox" instance="Dialog"] floating enable, border normal
+for_window [class="firefox"] focus child, layout tabbed, focus
+assign [class="firefox"] $ws1
 
 assign [class="^URxvt$"] → $ws2
 for_window [class="^URxvt$"] focus child, border pixel 1, focus
