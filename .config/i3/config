@@ -236,7 +236,7 @@ mode "resize" {
 
 
 
-bindsym --release $mod+backslash exec sh ~/.i3/scripts/rofi-focus-or-launch.sh 
+bindsym --release $mod+Tab exec sh ~/.i3/scripts/rofi-focus-or-launch.sh 
 
 set $mode_workspace_screen move workspace to output ◄ ▼ ▲ ►
 
