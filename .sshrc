@@ -139,6 +139,7 @@ __powerline() {
         local RET="$?"
         local TIMESTAMP="$(date +%s%3N)"
         local PS1L="$BG_BASE1$FG_BASE2 \w $RESET"    
+        local HOSTNAME="$(hostname)"    
         local TIME="$(date +%H:%M:%S)"
 
         # get text duration text
@@ -153,8 +154,8 @@ __powerline() {
             local timeMinutes=$(( EXEC_TIME / 60000 ))
             local duration_text="$([[ $timeMinutes -eq "0" ]] && printf '%d.%03d' $timeSeconds $timeMillis || printf '%02d:%02d.%03d' $timeMinutes $timeSeconds $timeMillis)"
             duration_text="$duration_text Dur"
-            duration_PS1RHS=" $FG_BASE2$BG_BASE2$FG_BASE3 $duration_text"
-            duration_PS1RHS_stripped="   $duration_text"
+            duration_PS1RHS="$FG_BASE2$BG_BASE2$FG_BASE3 $duration_text"
+            duration_PS1RHS_stripped="  $duration_text"
         fi
 
         # Check the exit code of the previous command and display different
@@ -170,10 +171,10 @@ __powerline() {
         fi
 
         PS1L+="$FG_BASE1$BG_EXIT$FG_BASE3 $PS_SYMBOL $RESET$FG_EXIT$RESET "
-	    local PS1RHS="$FG_EXIT$BG_EXIT$FG_BASE3 $RET_CODE$duration_PS1RHS $FG_BASE3$BG_BASE3$FG_BASE2 $TIME "
+	    local PS1RHS="$FG_EXIT$BG_EXIT$FG_BASE3 $RET_CODE $FG_VIOLET$BG_VIOLET$FG_BASE3 $HOSTNAME $duration_PS1RHS $FG_BASE3$BG_BASE3$FG_BASE2 $TIME "
         #local PS1LHS="$BG_MAGENTA$FG_BASE3$PS1RHSTEXT $FG_MAGENTA$BG_BASE1"
         local PS1LHS=""
-        local PS1RHS_stripped=$(sed "s,\x1B\[[0-9;]*[a-zA-Z],,g" <<<" $RET_CODE$duration_PS1RHS_stripped   $TIME ")  
+        local PS1RHS_stripped=$(sed "s,\x1B\[[0-9;]*[a-zA-Z],,g" <<<" $RET_CODE   $HOSTNAME $duration_PS1RHS_stripped   $TIME ")  
     
         # Reference: https://en.wikipedia.org/wiki/ANSI_escape_code
         local Save='\e[s' # Save cursor position
