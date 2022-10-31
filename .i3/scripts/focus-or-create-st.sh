@@ -8,7 +8,7 @@ if ! [ ":$PATH:" == *":$HOME/bin:"* ]; then PATH=$HOME/bin:$PATH:$HOME/.local/bi
 
 function open_new_terminal(){
 	export START_TMUX_FROM_WD_CACHE="True"
-	st -c $window_class_name -f "$font"
+	exec st -c $window_class_name -f "$font"
 }
 
 if [[ $active_class_name == $window_class_name ]]
