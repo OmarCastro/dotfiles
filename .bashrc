@@ -321,6 +321,28 @@ ssh(){
   return $return_code
 }
 
+function __has_param() {
+    local terms="$1"
+    shift
+
+    for term in $terms; do
+        for arg; do
+            if [[ $arg == $term ]]; then
+                return 0
+            fi
+        done
+    done
+    return 1
+}
+
+tail(){
+  if __has_param '-f --follow -f*' "$@"; then
+    command tail "$@" |  awk '{printf("\x1B[0;32m%6s║\x1B[0m %s\n", NR, $0)}'
+  else
+    command tail "$@"
+  fi
+}
+
 __powerline
 unset __powerline
 
