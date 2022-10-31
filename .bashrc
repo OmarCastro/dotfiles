@@ -301,7 +301,7 @@ function __cache_working_directory() {
     }
 
     if [[ -r ~/.cache/.bashrc.d/cwd ]]; then
-        cd $(cat ~/.cache/.bashrc.d/cwd)
+        cd "$(cat ~/.cache/.bashrc.d/cwd)"
     fi
     PROMPT_COMMAND="$PROMPT_COMMAND;__cache_wd_aux"
 }
