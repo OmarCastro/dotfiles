@@ -336,6 +336,7 @@ function __has_param() {
 }
 
 tail(){
+  #adds colored line number when using --follow
   if __has_param '-f --follow -f*' "$@"; then
     command tail "$@" |  awk '{printf("\x1B[0;32m%6s║\x1B[0m %s\n", NR, $0)}'
   else
