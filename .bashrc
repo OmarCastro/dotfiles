@@ -287,7 +287,7 @@ __powerline() {
         local Save='\e[s' # Save cursor position
         local Rest='\e[u' # Restore cursor to save point
 
-        PS1="\[${Save}\e[${COLUMNS}C\e[${#PS1RHS_stripped}D${PS1RHS}${Rest}\]$RESET$PS1LHS\n$PS1L"
+        PS1="\[${Save}\e[${COLUMNS}C\e[${#PS1RHS_stripped}D${PS1RHS}${Rest}\]$RESET$PS1LHS$PS1L"
     }
 
     ps0
