@@ -21,6 +21,5 @@ $(cal --color=always $month $year \
     | sed 's/\x1b\[[27;]*m/\<\/b\>\<\/span\>/g' \
     | tail -n +2)"
 
-echo "${rofi_optional_args[@]}"
 rofi -e "$CONTENT" -markup -m -3 "${rofi_optional_args[@]}"
 
