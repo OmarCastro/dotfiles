@@ -19,35 +19,32 @@ case $- in
       *) return;;
 esac
 
-bash_theme_local="solarized-dark"
-bash_theme_ssh="solarized-dark-desaturated"
-
-shopt -s autocd
-
-# import dynamic-colors
-if [ ! -d ~/.dynamic-colors ]; then git clone https://github.com/sos4nt/dynamic-colors ~/.dynamic-colors; fi
-export PATH="$HOME/bin:$HOME/.dynamic-colors/bin:$PATH"
-source $HOME/.dynamic-colors/completions/dynamic-colors.bash
-
-
-# Apply color theme dyanmically when using a 256 or more colors terminal support
-if [[ $(tput colors) -ge 256 ]] 2>/dev/null; then
-  dynamic-colors switch $bash_theme_local
-fi
-
 # only run tmux if requested, by setting START_TMUX_FROM_WD_CACHE to true when starting a terminal.
 if [ -z $TMUX ] && [ "$START_TMUX_FROM_WD_CACHE" == "True" ]; then
-  unset $START_TMUX_FROM_WD_CACHE
-  # tmux only puts true color if term is "xterm-256color"
-  export TERM="xterm-256color"
+  export START_TMUX_FROM_WD_CACHE=
+  unset START_TMUX_FROM_WD_CACHE
   if tmux ls | grep -vq attached; then
-    tmux -2 attach-session -d
+    exec tmux -2 attach-session -d
   else
-    tmux -2 new-session \; setenv BASH_START_FROM_WD_CACHE True
+    exec tmux -2 new-session \; setenv BASH_START_FROM_WD_CACHE True
   fi
   exit 0
 fi
 
+shopt -s autocd
+
+bash_theme_local="solarized-dark"
+bash_theme_ssh="solarized-dark-desaturated"
+
+# import dynamic-colors
+if [ ! -d ~/.dynamic-colors ]; then git clone https://github.com/peterhoeg/dynamic-colors ~/.dynamic-colors; fi
+export PATH="$HOME/bin:$HOME/.dynamic-colors/bin:$PATH"
+source $HOME/.dynamic-colors/completions/dynamic-colors.bash
+
+# Apply color theme dyanmically when using a 256 or more colors terminal support
+if [[ $(tput colors) -ge 256 ]] 2>/dev/null; then
+  env -u TMUX dynamic-colors switch $bash_theme_local
+fi
 
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
@@ -226,17 +223,18 @@ __powerline() {
     readonly REVERSE="\[$(tput rev)\]"
     readonly RESET="\[$(tput sgr0)\]"
     readonly BOLD="\[$(tput bold)\]"
+    readonly EL="\[$(echo -e '\x1b[K')\]" # erase line
 
     if [[ -z "$PS_SYMBOL" ]]; then
       case "$(uname)" in
           Darwin)
-              PS_SYMBOL=$PS_SYMBOL_DARWIN
-              ;;
+            PS_SYMBOL=$PS_SYMBOL_DARWIN
+            ;;
           Linux)
-              PS_SYMBOL=$PS_SYMBOL_LINUX
-              ;;
+            PS_SYMBOL=$PS_SYMBOL_LINUX
+            ;;
           *)
-              PS_SYMBOL=$PS_SYMBOL_OTHER
+            PS_SYMBOL=$PS_SYMBOL_OTHER
       esac
     fi
 
@@ -246,10 +244,11 @@ __powerline() {
     ps1() {
         local RET="$?"
         local TIMESTAMP="$(date +%s%3N)"
-        local PS1L="$BG_BASE1$FG_BASE2 \w $RESET"    
-        local TIME="$(date +%H:%M:%S)"
+        local TIME=" $(date +%H:%M:%S)"
 
-        # get text duration text
+	      local sep=""
+        
+	      # get text duration text
         local duration_PS1RHS=""
         local duration_PS1RHS_stripped=""
         if ! [ -z ${PS0time+x} ]; then
@@ -261,8 +260,7 @@ __powerline() {
             local timeMinutes=$(( EXEC_TIME / 60000 ))
             local duration_text="$([[ $timeMinutes -eq "0" ]] && printf '%d.%03d' $timeSeconds $timeMillis || printf '%02d:%02d.%03d' $timeMinutes $timeSeconds $timeMillis)"
             duration_text="$duration_text Dur"
-            duration_PS1RHS=" $FG_BASE2$BG_BASE2$FG_BASE3 $duration_text"
-            duration_PS1RHS_stripped="   $duration_text"
+            duration_PS1="$BG_BASE2$sep$FG_BASE3 $duration_text $FG_BASE2"
         fi
 
         # Check the exit code of the previous command and display different
@@ -277,21 +275,18 @@ __powerline() {
             local RET_CODE="$RET ↵"
         fi
 
-        PS1L+="$FG_BASE1$BG_EXIT$FG_BASE3 $PS_SYMBOL $RESET$FG_EXIT$RESET "
-	    local PS1RHS="$FG_EXIT$BG_EXIT$FG_BASE3 $RET_CODE$duration_PS1RHS $FG_BASE3$BG_BASE3$FG_BASE2 $TIME "
-        #local PS1LHS="$BG_MAGENTA$FG_BASE3$PS1RHSTEXT $FG_MAGENTA$BG_BASE1"
-        local PS1LHS=""
-        local PS1RHS_stripped=$(sed "s,\x1B\[[0-9;]*[a-zA-Z],,g" <<<" $RET_CODE$duration_PS1RHS_stripped   $TIME ")  
+        local PS1_top="$BG_BASE1$FG_BASE2 \w $FG_BASE1$BG_BASE03$sep$FG_BASE0 $TIME $FG_BASE03$duration_PS1$BG_EXIT$sep$FG_BASE3 $RET_CODE $EL"	
+        local PS1_bottom="$BOLD $PS_SYMBOL ❯ $RESET"
+
+        PS1="$PS1_top$RESET\n$PS1_bottom"
     
-        # Reference: https://en.wikipedia.org/wiki/ANSI_escape_code
-        local Save='\e[s' # Save cursor position
-        local Rest='\e[u' # Restore cursor to save point
-
-        PS1="\[${Save}\e[${COLUMNS}C\e[${#PS1RHS_stripped}D${PS1RHS}${Rest}\]$RESET$PS1LHS$PS1L"
     }
-
+    ps2(){
+        PS2="$BOLD...❯ $RESET"
+    }
     ps0
     PROMPT_COMMAND=ps1
+    ps2
 }
 
 function __cache_working_directory() {
@@ -315,7 +310,7 @@ ssh(){
     executable="sshrc"
   fi
 
-  command "$executable" -o "PermitLocalCommand yes" -o "Localcommand dynamic-colors switch $bash_theme_ssh" "$@"
+  command "$executable" -o "PermitLocalCommand yes" -o "Localcommand env -u TMUX dynamic-colors switch $bash_theme_ssh" "$@"
   local return_code=$?
   dynamic-colors switch $bash_theme_local
   return $return_code
@@ -348,7 +343,7 @@ __powerline
 unset __powerline
 
 # only use working_directory caching on tmux
-if [ "$TERM_PROGRAM" = tmux  ] && tmux show-environment BASH_START_FROM_WD_CACHE > /dev/null; then
+if [ ! -z $TMUX  ] && tmux show-environment BASH_START_FROM_WD_CACHE > /dev/null; then
     __cache_working_directory
 fi
 unset __cache_working_directory
