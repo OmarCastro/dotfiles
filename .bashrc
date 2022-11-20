@@ -33,17 +33,22 @@ fi
 
 shopt -s autocd
 
-bash_theme_local="solarized-dark"
-bash_theme_ssh="solarized-dark-desaturated"
+bash_theme_local="dracula"
+bash_theme_ssh="solarized-dark"
 
+DYNAMIC_COLORS_ROOT="${XDG_DATA_HOME:-$HOME/.local/share}/dynamic-colors"
 # import dynamic-colors
-if [ ! -d ~/.dynamic-colors ]; then git clone https://github.com/peterhoeg/dynamic-colors ~/.dynamic-colors; fi
-export PATH="$HOME/bin:$HOME/.dynamic-colors/bin:$PATH"
-source $HOME/.dynamic-colors/completions/dynamic-colors.bash
+if [ ! -d "$DYNAMIC_COLORS_ROOT" ]; then git clone https://github.com/peterhoeg/dynamic-colors "$DYNAMIC_COLORS_ROOT"; fi
+export PATH="$HOME/bin:$DYNAMIC_COLORS_ROOT/bin:$PATH"
+source $DYNAMIC_COLORS_ROOT/completions/dynamic-colors.bash
+
+dynamic-colors(){
+    env -u TMUX dynamic-colors "$@"
+}
 
 # Apply color theme dyanmically when using a 256 or more colors terminal support
 if [[ $(tput colors) -ge 256 ]] 2>/dev/null; then
-  env -u TMUX dynamic-colors switch $bash_theme_local
+  dynamic-colors switch $bash_theme_local
 fi
 
 # don't put duplicate lines or lines starting with space in the history.
@@ -138,86 +143,43 @@ __powerline() {
     readonly PS_SYMBOL_LINUX='$'
     readonly PS_SYMBOL_OTHER='%'
 
-    # Solarized colorscheme
-    if [[ $(tput colors) -ge 256 ]] 2>/dev/null; then
-        readonly FG_BASE03="\[$(tput setaf 234)\]"
-        readonly FG_BASE02="\[$(tput setaf 235)\]"
-        readonly FG_BASE01="\[$(tput setaf 240)\]"
-        readonly FG_BASE00="\[$(tput setaf 241)\]"
-        readonly FG_BASE0="\[$(tput setaf 244)\]"
-        #readonly FG_BASE1="\[$(tput setaf 245)\]"
-        readonly FG_BASE1="\[$(tput setaf 4)\]"
-        #readonly FG_BASE2="\[$(tput setaf 254)\]"
-        readonly FG_BASE2="\[$(tput setaf 0)\]"
-        readonly FG_BASE3="\[$(tput setaf 230)\]"
-        readonly FG_BASE4="\[$(tput setaf 11)\]"
+    
+    readonly FG_BASE03="\[$(tput setaf 8)\]"
+    readonly FG_BASE02="\[$(tput setaf 0)\]"
+    readonly FG_BASE01="\[$(tput setaf 10)\]"
+    readonly FG_BASE00="\[$(tput setaf 11)\]"
+    readonly FG_BASE0="\[$(tput setaf 12)\]"
+    readonly FG_BASE1="\[$(tput setaf 14)\]"
+    readonly FG_BASE2="\[$(tput setaf 7)\]"
+    readonly FG_BASE3="\[$(tput setaf 15)\]"
 
-        readonly BG_BASE03="\[$(tput setab 234)\]"
-        readonly BG_BASE02="\[$(tput setab 235)\]"
-        readonly BG_BASE01="\[$(tput setab 240)\]"
-        readonly BG_BASE00="\[$(tput setab 241)\]"
-        readonly BG_BASE0="\[$(tput setab 244)\]"
-        #readonly BG_BASE1="\[$(tput setab 245)\]"
-        readonly BG_BASE1="\[$(tput setab 4)\]"
-        #readonly BG_BASE2="\[$(tput setab 254)\]"
-        readonly BG_BASE2="\[$(tput setab 0)\]"
-        readonly BG_BASE3="\[$(tput setab 230)\]"
-        readonly BG_BASE4="\[$(tput setab 11)\]"
+    readonly BG_BASE03="\[$(tput setab 8)\]"
+    readonly BG_BASE02="\[$(tput setab 0)\]"
+    readonly BG_BASE01="\[$(tput setab 10)\]"
+    readonly BG_BASE00="\[$(tput setab 11)\]"
+    readonly BG_BASE0="\[$(tput setab 12)\]"
+    readonly BG_BASE1="\[$(tput setab 14)\]"
+    readonly BG_BASE2="\[$(tput setab 7)\]"
+    readonly BG_BASE3="\[$(tput setab 15)\]"
 
-        readonly FG_YELLOW="\[$(tput setaf 136)\]"
-        readonly FG_ORANGE="\[$(tput setaf 166)\]"
-        readonly FG_RED="\[$(tput setaf 160)\]"
-        readonly FG_MAGENTA="\[$(tput setaf 125)\]"
-        readonly FG_VIOLET="\[$(tput setaf 61)\]"
-        readonly FG_BLUE="\[$(tput setaf 33)\]"
-        readonly FG_CYAN="\[$(tput setaf 37)\]"
-        readonly FG_GREEN="\[$(tput setaf 64)\]"
+    readonly FG_YELLOW="\[$(tput setaf 3)\]"
+    readonly FG_ORANGE="\[$(tput setaf 9)\]"
+    readonly FG_RED="\[$(tput setaf 1)\]"
+    readonly FG_MAGENTA="\[$(tput setaf 5)\]"
+    readonly FG_VIOLET="\[$(tput setaf 13)\]"
+    readonly FG_BLUE="\[$(tput setaf 4)\]"
+    readonly FG_CYAN="\[$(tput setaf 6)\]"
+    readonly FG_GREEN="\[$(tput setaf 2)\]"
 
-        readonly BG_YELLOW="\[$(tput setab 136)\]"
-        readonly BG_ORANGE="\[$(tput setab 166)\]"
-        readonly BG_RED="\[$(tput setab 160)\]"
-        readonly BG_MAGENTA="\[$(tput setab 125)\]"
-        readonly BG_VIOLET="\[$(tput setab 61)\]"
-        readonly BG_BLUE="\[$(tput setab 33)\]"
-        readonly BG_CYAN="\[$(tput setab 37)\]"
-        readonly BG_GREEN="\[$(tput setab 64)\]"
-     else
-        readonly FG_BASE03="\[$(tput setaf 8)\]"
-        readonly FG_BASE02="\[$(tput setaf 0)\]"
-        readonly FG_BASE01="\[$(tput setaf 10)\]"
-        readonly FG_BASE00="\[$(tput setaf 11)\]"
-        readonly FG_BASE0="\[$(tput setaf 12)\]"
-        readonly FG_BASE1="\[$(tput setaf 14)\]"
-        readonly FG_BASE2="\[$(tput setaf 7)\]"
-        readonly FG_BASE3="\[$(tput setaf 15)\]"
-
-        readonly BG_BASE03="\[$(tput setab 8)\]"
-        readonly BG_BASE02="\[$(tput setab 0)\]"
-        readonly BG_BASE01="\[$(tput setab 10)\]"
-        readonly BG_BASE00="\[$(tput setab 11)\]"
-        readonly BG_BASE0="\[$(tput setab 12)\]"
-        readonly BG_BASE1="\[$(tput setab 14)\]"
-        readonly BG_BASE2="\[$(tput setab 7)\]"
-        readonly BG_BASE3="\[$(tput setab 15)\]"
-
-        readonly FG_YELLOW="\[$(tput setaf 3)\]"
-        readonly FG_ORANGE="\[$(tput setaf 9)\]"
-        readonly FG_RED="\[$(tput setaf 1)\]"
-        readonly FG_MAGENTA="\[$(tput setaf 5)\]"
-        readonly FG_VIOLET="\[$(tput setaf 13)\]"
-        readonly FG_BLUE="\[$(tput setaf 4)\]"
-        readonly FG_CYAN="\[$(tput setaf 6)\]"
-        readonly FG_GREEN="\[$(tput setaf 2)\]"
-
-        readonly BG_YELLOW="\[$(tput setab 3)\]"
-        readonly BG_ORANGE="\[$(tput setab 9)\]"
-        readonly BG_RED="\[$(tput setab 1)\]"
-        readonly BG_MAGENTA="\[$(tput setab 5)\]"
-        readonly BG_VIOLET="\[$(tput setab 13)\]"
-        readonly BG_BLUE="\[$(tput setab 4)\]"
-        readonly BG_CYAN="\[$(tput setab 6)\]"
-        readonly BG_GREEN="\[$(tput setab 2)\]"
-    fi
+    readonly BG_YELLOW="\[$(tput setab 3)\]"
+    readonly BG_ORANGE="\[$(tput setab 9)\]"
+    readonly BG_RED="\[$(tput setab 1)\]"
+    readonly BG_MAGENTA="\[$(tput setab 5)\]"
+    readonly BG_VIOLET="\[$(tput setab 13)\]"
+    readonly BG_BLUE="\[$(tput setab 4)\]"
+    readonly BG_CYAN="\[$(tput setab 6)\]"
+    readonly BG_GREEN="\[$(tput setab 2)\]"
+    
 
     readonly DIM="\[$(tput dim)\]"
     readonly REVERSE="\[$(tput rev)\]"
@@ -239,28 +201,28 @@ __powerline() {
     fi
 
     ps0(){
-        PS0='\[${PS1:$((PS0time=$(date +%s%3N), 0)):0}\]'
+        PS0='\[${PS1:$((PStimeStart=$(date +%s%3N), 0)):0}\]'
     }
     ps1() {
         local RET="$?"
         local TIMESTAMP="$(date +%s%3N)"
-        local TIME=" $(date +%H:%M:%S)"
+        local TIME="  $(date +%H:%M:%S)"
 
-	      local sep=""
+	    local sep=""
         
 	      # get text duration text
         local duration_PS1RHS=""
         local duration_PS1RHS_stripped=""
-        if ! [ -z ${PS0time+x} ]; then
-            local EXEC_TIME="$(( TIMESTAMP - PS0time))"
-            unset PS0time
+        if [ -n ${PStimeStart:-""} ]; then
+            local EXEC_TIME="$(( TIMESTAMP - PStimeStart))"
+            export PStimeStart=""
 
             local timeMillis=$(( EXEC_TIME % 1000 ))
             local timeSeconds=$(( (EXEC_TIME / 1000) % 60 ))
             local timeMinutes=$(( EXEC_TIME / 60000 ))
             local duration_text="$([[ $timeMinutes -eq "0" ]] && printf '%d.%03d' $timeSeconds $timeMillis || printf '%02d:%02d.%03d' $timeMinutes $timeSeconds $timeMillis)"
             duration_text="$duration_text Dur"
-            duration_PS1="$BG_BASE2$sep$FG_BASE3 $duration_text $FG_BASE2"
+            duration_PS1="$BG_ORANGE$sep$FG_BASE02 $duration_text $FG_ORANGE"
         fi
 
         # Check the exit code of the previous command and display different
@@ -275,7 +237,7 @@ __powerline() {
             local RET_CODE="$RET ↵"
         fi
 
-        local PS1_top="$BG_BASE1$FG_BASE2 \w $FG_BASE1$BG_BASE03$sep$FG_BASE0 $TIME $FG_BASE03$duration_PS1$BG_EXIT$sep$FG_BASE3 $RET_CODE $EL"	
+        local PS1_top="$BG_BLUE$FG_BASE02 \w $FG_BLUE$BG_YELLOW$sep$FG_BASE02 $TIME $FG_YELLOW$duration_PS1$BG_EXIT$sep$FG_BASE02 $RET_CODE $FG_EXIT$BG_BASE03$sep$EL"	
         local PS1_bottom="$BOLD $PS_SYMBOL ❯ $RESET"
 
         PS1="$PS1_top$RESET\n$PS1_bottom"
