@@ -161,11 +161,6 @@ __powerline() {
       echo -e "$(hex_to_rgb "$1" '\x1b[38;2;%r;%g;%bm')"
     }
 
-
-
-
-    readonly BG_REST="\[$(tput setab 0)\]"
-
     readonly FG_VIOLET="\[$(set_fg_hex '#533353')\]"
     readonly FG_GREEN="\[$(set_fg_hex '#335333')\]"
     readonly FG_RED="\[$(set_fg_hex '#b22222')\]"
@@ -173,12 +168,11 @@ __powerline() {
     readonly FG_TEXTL="\[$(set_fg_hex '#dddddd')\]"
     readonly FG_TEXTD="\[$(set_fg_hex '#333333')\]"
 
-
     readonly BG_VIOLET="\[$(set_bg_hex '#533353')\]"
     readonly BG_RED="\[$(set_bg_hex '#b22222')\]"
     readonly BG_GREEN="\[$(set_bg_hex '#335333')\]"
     readonly BG_LGREEN="\[$(set_bg_hex '#b5bd68')\]"
-
+    readonly BG_REST="\[$(tput setab 0)\]"
 
     readonly DIM="\[$(tput dim)\]"
     readonly REVERSE="\[$(tput rev)\]"
@@ -188,14 +182,9 @@ __powerline() {
 
     if [[ -z "$PS_SYMBOL" ]]; then
       case "$(uname)" in
-          Darwin)
-            PS_SYMBOL=$PS_SYMBOL_DARWIN
-            ;;
-          Linux)
-            PS_SYMBOL=$PS_SYMBOL_LINUX
-            ;;
-          *)
-            PS_SYMBOL=$PS_SYMBOL_OTHER
+          Darwin) PS_SYMBOL=$PS_SYMBOL_DARWIN;;
+          Linux)  PS_SYMBOL=$PS_SYMBOL_LINUX;;
+          *)      PS_SYMBOL=$PS_SYMBOL_OTHER
       esac
     fi
 
