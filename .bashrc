@@ -143,43 +143,42 @@ __powerline() {
     readonly PS_SYMBOL_LINUX='$'
     readonly PS_SYMBOL_OTHER='%'
 
-    
-    readonly FG_BASE03="\[$(tput setaf 8)\]"
-    readonly FG_BASE02="\[$(tput setaf 0)\]"
-    readonly FG_BASE01="\[$(tput setaf 10)\]"
-    readonly FG_BASE00="\[$(tput setaf 11)\]"
-    readonly FG_BASE0="\[$(tput setaf 12)\]"
-    readonly FG_BASE1="\[$(tput setaf 14)\]"
-    readonly FG_BASE2="\[$(tput setaf 7)\]"
-    readonly FG_BASE3="\[$(tput setaf 15)\]"
+    hex_to_rgb() {
+      : "${1/\#}"
+      ((r=16#${_:0:2},g=16#${_:2:2},b=16#${_:4:2}))
+      : "${2:-"%r %g %b"}"
+      : "${_//%r/$r}"
+      : "${_//%g/$g}"
+      : "${_//%b/$b}"
+      printf '%s\n' "$_"
+    }
 
-    readonly BG_BASE03="\[$(tput setab 8)\]"
-    readonly BG_BASE02="\[$(tput setab 0)\]"
-    readonly BG_BASE01="\[$(tput setab 10)\]"
-    readonly BG_BASE00="\[$(tput setab 11)\]"
-    readonly BG_BASE0="\[$(tput setab 12)\]"
-    readonly BG_BASE1="\[$(tput setab 14)\]"
-    readonly BG_BASE2="\[$(tput setab 7)\]"
-    readonly BG_BASE3="\[$(tput setab 15)\]"
+    set_bg_hex() {
+      echo -e "$(hex_to_rgb "$1" '\x1b[48;2;%r;%g;%bm')"
+    }
 
-    readonly FG_YELLOW="\[$(tput setaf 3)\]"
-    readonly FG_ORANGE="\[$(tput setaf 9)\]"
-    readonly FG_RED="\[$(tput setaf 1)\]"
-    readonly FG_MAGENTA="\[$(tput setaf 5)\]"
-    readonly FG_VIOLET="\[$(tput setaf 13)\]"
-    readonly FG_BLUE="\[$(tput setaf 4)\]"
-    readonly FG_CYAN="\[$(tput setaf 6)\]"
-    readonly FG_GREEN="\[$(tput setaf 2)\]"
+    set_fg_hex() {
+      echo -e "$(hex_to_rgb "$1" '\x1b[38;2;%r;%g;%bm')"
+    }
 
-    readonly BG_YELLOW="\[$(tput setab 3)\]"
-    readonly BG_ORANGE="\[$(tput setab 9)\]"
-    readonly BG_RED="\[$(tput setab 1)\]"
-    readonly BG_MAGENTA="\[$(tput setab 5)\]"
-    readonly BG_VIOLET="\[$(tput setab 13)\]"
-    readonly BG_BLUE="\[$(tput setab 4)\]"
-    readonly BG_CYAN="\[$(tput setab 6)\]"
-    readonly BG_GREEN="\[$(tput setab 2)\]"
-    
+
+
+
+    readonly BG_REST="\[$(tput setab 0)\]"
+
+    readonly FG_VIOLET="\[$(set_fg_hex '#533353')\]"
+    readonly FG_GREEN="\[$(set_fg_hex '#335333')\]"
+    readonly FG_RED="\[$(set_fg_hex '#b22222')\]"
+    readonly FG_LGREEN="\[$(set_fg_hex '#b5bd68')\]"
+    readonly FG_TEXTL="\[$(set_fg_hex '#dddddd')\]"
+    readonly FG_TEXTD="\[$(set_fg_hex '#333333')\]"
+
+
+    readonly BG_VIOLET="\[$(set_bg_hex '#533353')\]"
+    readonly BG_RED="\[$(set_bg_hex '#b22222')\]"
+    readonly BG_GREEN="\[$(set_bg_hex '#335333')\]"
+    readonly BG_LGREEN="\[$(set_bg_hex '#b5bd68')\]"
+
 
     readonly DIM="\[$(tput dim)\]"
     readonly REVERSE="\[$(tput rev)\]"
@@ -208,11 +207,12 @@ __powerline() {
         local TIMESTAMP="$(date +%s%3N)"
         local TIME="  $(date +%H:%M:%S)"
 
+      # just some symbols to copy paste:    
+
 	    local sep=""
-        
+        local sep2=""
+        local block_duration=""
 	      # get text duration text
-        local duration_PS1RHS=""
-        local duration_PS1RHS_stripped=""
         if [ -n ${PStimeStart:-""} ]; then
             local EXEC_TIME="$(( TIMESTAMP - PStimeStart))"
             export PStimeStart=""
@@ -222,7 +222,6 @@ __powerline() {
             local timeMinutes=$(( EXEC_TIME / 60000 ))
             local duration_text="$([[ $timeMinutes -eq "0" ]] && printf '%d.%03d' $timeSeconds $timeMillis || printf '%02d:%02d.%03d' $timeMinutes $timeSeconds $timeMillis)"
             duration_text="$duration_text Dur"
-            duration_PS1="$BG_ORANGE$sep$FG_BASE02 $duration_text $FG_ORANGE"
         fi
 
         # Check the exit code of the previous command and display different
@@ -237,7 +236,13 @@ __powerline() {
             local RET_CODE="$RET ↵"
         fi
 
-        local PS1_top="$BG_BLUE$FG_BASE02 \w $FG_BLUE$BG_YELLOW$sep$FG_BASE02 $TIME $FG_YELLOW$duration_PS1$BG_EXIT$sep$FG_BASE02 $RET_CODE $FG_EXIT$BG_BASE03$sep$EL"	
+        local block_path="$BG_VIOLET$FG_TEXTL \w $FG_VIOLET"
+        local block_time="$BG_LGREEN$sep$FG_TEXTD $TIME $FG_LGREEN"
+        if [ -n "$duration_text" ]; then
+            local block_command_result="$BG_EXIT$sep$FG_TEXTL $duration_text $sep2 $RET_CODE $FG_EXIT"
+        fi
+
+        local PS1_top="$block_path$block_time$block_command_result$BG_REST$sep"	
         local PS1_bottom="$BOLD $PS_SYMBOL ❯ $RESET"
 
         PS1="$PS1_top$RESET\n$PS1_bottom"
