@@ -1,0 +1,26 @@
+#!/bin/env bash
+
+CONTENT="$(df -h | awk '{print $6 " " $4 " / " $2 " " $5}' | tail -n +2 | column -t -N filesystem,free,/,total,use% )"
+let "WIDTH = $(wc -L <<< "$CONTENT") + 4"
+MARKUP_CONTENT=
+
+rofi_optional_args=()
+rofi_window_rasi="width:${WIDTH}ch"
+
+if ! [[ -z "$rofi_theme" ]]; then
+	rofi_optional_args+=( -theme "$rofi_theme" )
+fi
+if ! [[ -z "$rofi_window_anchor" ]]; then
+    rofi_window_rasi="anchor:$rofi_window_anchor; $rofi_window_rasi"
+fi
+rofi_optional_args+=( -theme-str "#window {$rofi_window_rasi;}" )
+
+echo "$CONTENT" | tail +2 | awk '/ 9[0-9]%/{print "<span background=\"#ee4835\" foreground=\"#eee8d5\">"$0"</span>"; next}1' | rofi \
+    -dmenu \
+    -mesg "$(echo "$CONTENT" | head -n 1 | sed -r 's|([^ ]+)|<b><u>\1</u></b>|g')" \
+    -markup \
+    -markup-rows \
+    -m -3 \
+    "${rofi_optional_args[@]}"    
+    -no-fixed-num-lines \
+    > /dev/null
