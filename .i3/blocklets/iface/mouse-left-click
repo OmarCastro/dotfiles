@@ -1,0 +1,17 @@
+#!/bin/env bash
+
+CONTENT=$( ip a \
+      | sed ':a;N;$!ba;s/\n  */;/g' \
+      | grep inet \
+      | sed -r -e "s|^[0-9]+: ([^:]+).*;inet ([^/]+).*;inet6 ([^/]+).*|\1;\2;\3|" -e "s|^[0-9]+: ([^:]+).*;inet6 ([^/]+).*|\1;;\2|" -e "s|^[0-9]+: ([^:]+).*;inet ([^/]+).*|\1;\2;|" \
+      | column -s ';' -t -R iface -N 'iface,IPv4,IPv6' \
+)
+let "WIDTH = $(wc -L <<< "$CONTENT") + 4"
+echo "$CONTENT" | tail +2 | rofi \
+      -dmenu \
+      -mesg "$(echo "$CONTENT" | head -n 1 |  sed -r '1s|([^ ]+)|<b><u>\1</u></b>|g')" \
+      -m -3 \
+      -theme-str '#window {anchor:southeast;}' \
+      -width -$WIDTH \
+      -no-fixed-num-lines \
+      > /dev/null

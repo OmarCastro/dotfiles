@@ -1,0 +1,26 @@
+#!/bin/bash
+
+if [[ -n $BLOCK_INSTANCE ]]; then
+  IF=$BLOCK_INSTANCE
+else
+  IF=$(ip route | awk '/^default/ { print $5 ; exit }')
+fi
+
+if [[ "$(cat /sys/class/net/$IF/operstate)" = 'down' ]]; then
+  rofi -e "nothing to copy to clipboard" -m -3 -width -21 -theme-str '#window {anchor:southeast;}' > /dev/null
+  exit
+fi
+
+case $1 in
+  -4)
+    AF=inet ;;
+  -6)
+    AF=inet6 ;;
+  *)
+    AF=inet6? ;;
+esac
+
+# if no interface is found, use the first device with a global scope
+IPADDR=$(ip addr show $IF | perl -n -e "/$AF ([^\/]+).* scope global/ && print \$1 and exit")
+
+echo -n "$IPADDR" | xsel -b > /dev/null && rofi -e "copied <b>$IPADDR</b> to clipboard" -markup -m -3 -width -21 -theme-str '#window {anchor:southeast;}' > /dev/null
