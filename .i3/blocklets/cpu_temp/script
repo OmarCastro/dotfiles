@@ -8,6 +8,6 @@ case "$BLOCK_BUTTON" in
     1) ( cd "$( dirname "${BASH_SOURCE[0]}" )" > /dev/null 2>&1 && setsid ./mouse-left-click ) > /dev/null  ;;
 esac
 
-v=$(cat /sys/bus/platform/devices/coretemp.0/hwmon/hwmon*/temp1_input)
+v=$(sensors | sed 's/([^)]*)//' | grep '+[0-9\.]*°C' | sed 's/[^:]*: *+//' | sort -nr | head -1)
 echo ${v::-3} "ºC"
 echo ${v::-3} "ºC"
