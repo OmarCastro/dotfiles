@@ -45,6 +45,7 @@ bindsym $mod+d exec rofi -show run
 
 bindsym --release Print exec import png:- | xclip -selection clipboard -t image/png
 
+focus_follows_mouse no
 
 # change focus
 bindsym $mod+j focus left
