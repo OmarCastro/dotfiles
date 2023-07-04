@@ -154,7 +154,7 @@ bindsym XF86MonBrightnessDown exec xbacklight -dec 20 # decrease screen brightne
 bindsym XF86TouchpadToggle exec /some/path/toggletouchpad.sh # toggle touchpad
 
 
-bindsym Control+mod1+l exec ~/.i3/scripts/rofi-lock-menu.sh 
+bindsym $mod+p exec ~/.i3/scripts/rofi-lock-menu.sh 
 
 ########################
 #
