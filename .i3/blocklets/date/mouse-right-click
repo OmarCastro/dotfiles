@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/sh
 date=$(date '+%A, %d %B %Y')
 
 rofi_optional_args=()
@@ -15,8 +15,7 @@ rofi_optional_args+=( -theme-str "#window {$rofi_window_rasi;}" )
 
 CONTENT="$date
 $(cal --color=always -y \
-            | sed 's/\x1b\[[7;]*m/\<span background="#FFFFFF" color="#262626"\>\<b\>/g' \
-            | sed 's/\x1b\[[27;]*m/\<\/b\>\<\/span\>/g' \
-            | tail -n +2)"
+    | sed 's|\x1b\[[7;]m\(\s*[0-9]*\)\x1b\[[0;]m|<span background="#FFFFFF" color="#262626"><b>\1</b></span>|g' \
+    | tail -n +2)"
 
 rofi -e "$CONTENT" -markup -m -3 "${rofi_optional_args[@]}"

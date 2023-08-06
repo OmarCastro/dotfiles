@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/sh
 year=$(date '+%Y')
 month=$(date '+%m' | sed 's/^0//')
 (( month == 12 )) && month=1 && year=$((year + 1)) || month=$((month + 1))
@@ -6,11 +6,7 @@ date=$(cal $month $year | sed -n '1s/^  *//;1s/  *$//p')
 
 CONTENT="$date
 
-$(cal --color=always $month $year \
-    | sed 's/\x1b\[[7;]*m/\<span background="#FFFFFF" color="#262626"\>\<b\>/g' \
-    | sed 's/\x1b\[[27;]*m/\<\/b\>\<\/span\>/g' \
-    | tail -n +2)"
-
+$(cal $month $year | tail -n +2)"
 
 rofi_optional_args=()
 rofi_window_rasi='width:23ch'
@@ -22,6 +18,5 @@ if ! [[ -z "$rofi_window_anchor" ]]; then
     rofi_window_rasi="anchor:$rofi_window_anchor; $rofi_window_rasi"
 fi
 rofi_optional_args+=( -theme-str "#window {$rofi_window_rasi;}" )
-
 
 rofi -e "$CONTENT" -markup -m -3 "${rofi_optional_args[@]}"
