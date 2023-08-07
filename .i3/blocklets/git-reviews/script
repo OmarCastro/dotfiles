@@ -1,0 +1,33 @@
+#!/bin/sh
+# Copyright (C) 2014 Omar Castro <julien@bonjean.info>
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+case "$BLOCK_BUTTON" in
+    1) ( cd "$( dirname "${BASH_SOURCE[0]}" )" > /dev/null 2>&1 && setsid ./mouse-left-click ) > /dev/null  ;;
+esac
+
+OPEN_PR="$(gh api graphql -f query='{ search(query: "type:pr state:open review-requested:OmarCastro", type: ISSUE) {issueCount}}' --jq '.data.search.issueCount')"
+
+echo "$OPEN_PR"
+echo "$OPEN_PR"
+if [ "$OPEN_PR" = '0' ]; then
+	echo "#FFFFFF"
+	echo "#335333"
+fi
+
+handle_buttons 
+
+{  "handler" : "STATIC",  "system" : "EVENT-SYSTEM",  "response" : {    "method" : null,    "url" : null,    "content" : "",    "headers" : { },    "status" : "204"  },  "matchable" : {    "type" : "url",    "a" : {      "type" : "endswith",      "expected" : {        "type" : "raw",        "value" : "activity/event/test"      }    }  }}
