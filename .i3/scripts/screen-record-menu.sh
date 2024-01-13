@@ -25,7 +25,7 @@ screencast_to_gif(){
 }
 
 screencast_to_video(){
-  peek
+  obs --startrecording ---minimize-to-tray --profile screen_small
 }
 
 CONFIG=$(echo "$CONFIG" | sed '/^\s*$/d' | tail -n +3 | sed -E 's/[[:blank:]]*(^|\|)[[:blank:]]*/\1/g')
