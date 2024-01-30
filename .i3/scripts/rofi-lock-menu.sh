@@ -28,6 +28,11 @@ suspend(){
   systemctl suspend
 }
 
+if pgrep 'yay|pacman'; then
+  echo -e "Exit" | rofi -theme "${SCRIPTPATH}/rofi-lock-menu.rasi" -dmenu -p 'Yay or pacman is running, system pause is disabled'
+  exit 0
+fi
+
 CONFIG=$(echo "$CONFIG" | sed '/^\s*$/d' | tail -n +3 | sed -E 's/[[:blank:]]*(^|\|)[[:blank:]]*/\1/g')
 
 
