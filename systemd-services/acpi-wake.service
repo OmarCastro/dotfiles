@@ -1,0 +1,12 @@
+# move to /etc/systemd/system/acpi-wake.service 
+# disables any acpi (USB, LAN, etc...) to resume from suspend except power button 
+[Unit]
+Description=ACPI Wake Service
+Before=sleep.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c "for i in $(cat /proc/acpi/wakeup | grep enabled|  awk '{print $1}' | xargs); do echo $i | tee /proc/acpi/wakeup; done"
+
+[Install]
+WantedBy=sleep.target
