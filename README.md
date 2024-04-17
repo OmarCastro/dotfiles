@@ -43,4 +43,7 @@ just my dotfiles for my linux environment
     - ${project_root}/.vimrc to ~/.vimrc
     - ${project_root}/.sshrc to ~/.sshrc
     - ${project_root}/.Xresources to ~/.Xresources
-    
+
+# Patches
+
+  - patch to ST - allows zoom with mouse wheel
