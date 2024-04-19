@@ -24,26 +24,8 @@ usageCPU=$(paste -d " " <(sleep 0.2; grep -P "cpu" /proc/stat) <(grep -P "cpu" /
 totalCpuUsage=$(echo $usageCPU | cut -d" " -f 2 )
 usageToShow=$(printf "%.1f%%\n" $totalCpuUsage )
 
-case $BLOCK_BUTTON in
-	# right click: show packages
-    1)
-	  CONTENT=$(echo "$usageCPU" \
-		| sed 's/cpu /total /' \
-		| awk '/ / {printf("%s:%.1f %%\n",$1,$2)}' \
-		| column -t -R 2 -s ':' -N 'unit,usage')
-  HEADER=$(echo "$CONTENT" | head -n 1 | sed -r -e 's|([^ ]+)|<b><u>\1</u></b>|g' );
-  LIST=$(echo "$CONTENT" | tail -n +3);
-  TOTAL=$(echo "$CONTENT" | sed -n -r '2{s|([^ ]+)|<b>\1</b>|gp;q;}');
-    
-  WIDTH=$(( $(wc -L <<< "$CONTENT") * 13 / 10 ))
-  rofi  \
-      -e "$TOTAL"$'\n'$'\n'"$HEADER"$'\n'"$LIST" \
-      -markup \
-      -m -3 \
-      -theme-str "#window {anchor:southeast; width: ${WIDTH}ch;}" \
-      -no-fixed-num-lines \
-      > /dev/null &
-	;;
+case "$BLOCK_BUTTON" in
+    1) ( cd "$( dirname "${BASH_SOURCE[0]}" )" > /dev/null 2>&1 && setsid ./mouse-left-click "$usageCPU" ) > /dev/null  ;;
 esac
 
 echo $usageToShow
