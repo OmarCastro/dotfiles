@@ -26,6 +26,7 @@ usageToShow=$(printf "%.1f%%\n" $totalCpuUsage )
 
 case "$BLOCK_BUTTON" in
     1) ( cd "$( dirname "${BASH_SOURCE[0]}" )" > /dev/null 2>&1 && setsid ./mouse-left-click "$usageCPU" ) > /dev/null  ;;
+    3) ( cd "$( dirname "${BASH_SOURCE[0]}" )" > /dev/null 2>&1 && setsid ./mouse-right-click ) > /dev/null ;;
 esac
 
 echo $usageToShow

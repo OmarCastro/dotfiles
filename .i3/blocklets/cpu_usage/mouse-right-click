@@ -1,0 +1,9 @@
+#!/bin/env bash
+
+CONTENT=$( grep 'processor\|vendor_id\|model name' /proc/cpuinfo)
+WIDTH=$(( $(wc -L <<< "$CONTENT") * 13 / 10 ))
+rofi  \
+    -e "$CONTENT" \
+    -m -3 \
+    -theme-str "#window {anchor:southeast; width: ${WIDTH}ch;}" \
+    -no-fixed-num-lines \
