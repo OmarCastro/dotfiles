@@ -10,6 +10,10 @@
 unset LANG
 LC_ALL=C
 
+case "$BLOCK_BUTTON" in
+    3) ( cd "$( dirname "${BASH_SOURCE[0]}" )" > /dev/null 2>&1 && setsid ./mouse-right-click ) > /dev/null ;;
+esac
+
 usageCPU=$(paste -d " " <(sleep 0.2; grep -P "cpu" /proc/stat) <(grep -P "cpu" /proc/stat) | awk '{ 
   prevIdle=($16 + $17) ;
   idle=($5 + $6) ;
@@ -26,7 +30,6 @@ usageToShow=$(printf "%.1f%%\n" $totalCpuUsage )
 
 case "$BLOCK_BUTTON" in
     1) ( cd "$( dirname "${BASH_SOURCE[0]}" )" > /dev/null 2>&1 && setsid ./mouse-left-click "$usageCPU" ) > /dev/null  ;;
-    3) ( cd "$( dirname "${BASH_SOURCE[0]}" )" > /dev/null 2>&1 && setsid ./mouse-right-click ) > /dev/null ;;
 esac
 
 echo $usageToShow
