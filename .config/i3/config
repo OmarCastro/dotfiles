@@ -44,6 +44,7 @@ bindsym $mod+d exec rofi -show run
 # bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
 
 bindsym --release Print exec import png:- | xclip -selection clipboard -t image/png
+bindsym --release Shift+Print exec import -window root ~/Imagens/screenshot.png
 bindsym $mod+Shift+s exec ~/.i3/scripts/screen-record-menu.sh 
 
 focus_follows_mouse no
