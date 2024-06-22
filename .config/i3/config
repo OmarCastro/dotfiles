@@ -168,7 +168,7 @@ exec_always --no-startup-id xsetroot -solid '#111111'
 exec --no-startup-id nm-applet
 exec --no-startup-id blueman-applet
 exec --no-startup-id xss-lock --transfer-sleep-lock ~/.i3/scripts/lock-screen.sh
-exec --no-startup-id rofi-polkit-agent
+exec --no-startup-id cmd-polkit-agent -s -c "python ~/.i3/scripts/cmd-polkit-rofi.py"
 
 
 
