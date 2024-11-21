@@ -1,6 +1,6 @@
 # Dotfiles
 
-just my dotfiles for my linux environment
+My dotfiles for my Linux environment.
 
 ## Used applications/language:
 
@@ -46,4 +46,4 @@ just my dotfiles for my linux environment
 
 # Patches
 
-  - patch to ST - allows zoom with mouse wheel
+  - patch to ST - allows zoom with Ctrl+Shift + mouse wheel
