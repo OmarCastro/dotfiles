@@ -17,6 +17,7 @@ Plug 'junegunn/fzf.vim'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 
 Plug 'tpope/vim-fugitive'
+Plug 'preservim/nerdtree'
 
 Plug 'mbbill/undotree'
 
@@ -183,6 +184,9 @@ nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 nnoremap <silent> <C-f> :Files<CR>
 " Search content using fzf
 nnoremap <silent><nowait><space>f  :Rg<CR>
+
+nnoremap <leader>n :NERDTreeFocus<CR>
+nnoremap <C-t> :NERDTreeToggle<CR>
 
 nnoremap <F5> :UndotreeToggle<CR>
 
