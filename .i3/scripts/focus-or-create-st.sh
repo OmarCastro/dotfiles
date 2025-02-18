@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 active_class_name=$(xprop -id $(xprop -root _NET_ACTIVE_WINDOW | cut -d ' ' -f 5) WM_CLASS | cut -d '"' -f 4)
 window_class_name="SimpleTerminal"
-font="Roboto Mono for powerline:pixelsize=13"
+font="Roboto Mono for powerline:pixelsize=16"
 
 # in non interactive shell PATH is not defined for ~/bin and ~/.local/bin
 if ! [ ":$PATH:" == *":$HOME/bin:"* ]; then PATH=$HOME/bin:$PATH:$HOME/.local/bin; fi
