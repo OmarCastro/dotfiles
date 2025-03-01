@@ -27,7 +27,3 @@ if [ "$OPEN_PR" = '0' ]; then
 	echo "#FFFFFF"
 	echo "#335333"
 fi
-
-handle_buttons 
-
-{  "handler" : "STATIC",  "system" : "EVENT-SYSTEM",  "response" : {    "method" : null,    "url" : null,    "content" : "",    "headers" : { },    "status" : "204"  },  "matchable" : {    "type" : "url",    "a" : {      "type" : "endswith",      "expected" : {        "type" : "raw",        "value" : "activity/event/test"      }    }  }}
