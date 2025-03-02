@@ -19,7 +19,7 @@ case "$BLOCK_BUTTON" in
     1) ( cd "$( dirname "${BASH_SOURCE[0]}" )" > /dev/null 2>&1 && setsid ./mouse-left-click ) > /dev/null  ;;
 esac
 
-OPEN_PR="$(gh api graphql -f query='{ search(query: "type:pr state:open review-requested:OmarCastro", type: ISSUE) {issueCount}}' --jq '.data.search.issueCount')"
+OPEN_PR="$(gh api graphql -f query='{ search(query: "type:pr state:open review-requested:'$(gh api user -q ".login")'", type: ISSUE) {issueCount}}' --jq '.data.search.issueCount')"
 
 echo "$OPEN_PR"
 echo "$OPEN_PR"
