@@ -203,6 +203,19 @@ command! -bang -nargs=* Rg
           \   <bang>0)
 
 
+function! EnsureDirExists (dir)
+  if !isdirectory(a:dir)
+    if exists("*mkdir")
+      call mkdir(a:dir,'p')
+      echo "Created directory: " . a:dir
+    else
+      echo "Please create directory: " . a:dir
+    endif
+  endif
+endfunction
+
+call EnsureDirExists($HOME . '/.vim/undo')
+
 set undofile " Maintain undo history between sessions
 set undodir=~/.vim/undo
 
