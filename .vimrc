@@ -188,7 +188,7 @@ nnoremap <silent><nowait><space>f  :Rg<CR>
 nnoremap <leader>n :NERDTreeFocus<CR>
 nnoremap <C-t> :NERDTreeToggle<CR>
 
-nnoremap <F5> :UndotreeToggle<CR>
+nnoremap U :UndotreeToggle<CR>
 
 let $FZF_DEFAULT_COMMAND = 'rg --files --ignore-case --hidden -g "!{.git,node_modules,vendor}/*"'
 
