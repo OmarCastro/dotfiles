@@ -179,7 +179,7 @@ exec --no-startup-id cmd-polkit-agent -s -c "python $HOME/.i3/scripts/cmd-polkit
 #
 #############
 
-for_window [class="firefox"] border pixel 0
+for_window [class="firefox"] fullscreen enable, border pixel 0
 for_window [class="firefox" instance="Dialog"] floating enable, border normal
 for_window [class="firefox"] focus child, layout tabbed, focus
 assign [class="firefox"] $ws1
@@ -202,6 +202,15 @@ for_window [title="Menu Update"] floating enable
 for_window [title="___"] floating enable
 
 assign [class="jetbrains-idea"] → $ws6
+assign [class="code-oss"] → $ws6
+for_window [class="code-oss"] focus child, layout tabbed, focus
+
+assign [class="Caja"] → $ws7
+for_window [class="Caja"] focus child, focus
+
+assign [class="steam"] → $ws8
+for_window [class="steam"] focus child, focus
+
 
 
 
