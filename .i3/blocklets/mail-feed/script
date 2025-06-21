@@ -1,0 +1,86 @@
+#!/bin/bash
+# extract-firefox-cookies.sh:
+#
+# Loads gmail feed using
+# 
+# Note: This script reads directly from the standard cookie jar file,
+# which means cookies which are kept only in memory ("session cookies")
+# will not be extracted.
+
+
+# USAGE:
+#
+# $ extract-firefox-cookies.sh > /tmp/cookies.txt
+# or
+# $ extract-firefox-cookies.sh ~/.mozilla/firefox/*default*/cookies.sqlite > /tmp/cookies.txt
+
+# USING WITH WGET:
+# $ wget --load-cookies=/tmp/cookies.txt http://example.com
+
+# USING WITH CURL:
+# $ curl --cookie /tmp/cookies.txt http://example.com
+
+# Note: If you do not specify an SQLite filename, this script will
+# intelligently find it for you.
+#
+# A) Usually it will check all profiles under ~/.mozilla/firefox/ and
+# use the cookies.sqlite that was updated most recently.
+#
+# B) If you've redirected stdin (with < or |) , then that will be used.
+
+
+# HISTORY: I believe this is circa 2010 from:
+# http://slacy.com/blog/2010/02/using-cookies-sqlite-in-wget-or-curl/
+# However, that site is down now.
+
+# Cleaned up by Hackerb9 (2017) to be more robust and require less typing.
+
+
+
+cleanup() {
+    rm -f $TMPFILE
+    exit 0
+}
+trap cleanup  EXIT INT QUIT TERM
+
+# We have to copy cookies.sqlite, because FireFox has a lock on it
+TMPFILE=`mktemp /tmp/cookies.sqlite.XXXXXXXXXX`
+
+
+(cd "$( dirname "${BASH_SOURCE[0]}" )" > /dev/null 2>&1 && ./extract-firefox-cookies.sh "$(ls -t ~/.mozilla/firefox/*/cookies.sqlite | head -1)") > $TMPFILE
+
+
+handle_buttons(){
+	case "$1" in
+	    1) ( cd "$( dirname "${BASH_SOURCE[0]}" )" > /dev/null 2>&1 && setsid ./mouse-left-click "$2") > /dev/null ;;
+	    3) ( cd "$( dirname "${BASH_SOURCE[0]}" )" > /dev/null 2>&1 && setsid ./mouse-right-click ) > /dev/null ;;
+	esac
+}
+
+
+# retrieving the email feed
+feed=$(curl --silent --cookie $TMPFILE https://mail.google.com/mail/feed/atom)
+# donloading the feed | isolating lines that starts with <fullcount> and <title> | removing </title> | transforming &quote in "
+email=$(echo "$feed" | grep -Eo "<fullcount>+[0-9]*</fullcount>|<title>*[[:alpha:],[:punct:],[:space:],[0-9]{0,100}]*</title>" |  sed s/\<title\>//g| sed s/\&quot\;/\"/g);
+
+handle_buttons $BLOCK_BUTTON "$email"
+
+
+n_email="x";
+# getting the number of undread emails
+if [[ $email != "" ]];  then
+      n_email=$(echo $email | grep -o "<fullcount>[0-9]*</fullcount>" | grep -o [0-9]*);
+fi
+
+echo "$n_email"
+echo "$n_email"
+if [ "$n_email" = '0' ]; then
+	echo "#FFFFFF"
+	echo "#335333"
+elif [ "$n_email" = 'x' ]; then
+	echo "#FFFFFF"
+	echo "#FF0000"
+fi
+
+
+
