@@ -45,7 +45,7 @@ trap cleanup  EXIT INT QUIT TERM
 
 # We have to copy cookies.sqlite, because FireFox has a lock on it
 TMPFILE=`mktemp /tmp/cookies.sqlite.XXXXXXXXXX`
-
+CACHE_FILE="$HOME/.cache/dotfiles-omarcastro-i3blocklet-mail-feed.runcache"
 
 (cd "$( dirname "${BASH_SOURCE[0]}" )" > /dev/null 2>&1 && ./extract-firefox-cookies.sh "$(ls -t ~/.mozilla/firefox/*/cookies.sqlite | head -1)") > $TMPFILE
 
@@ -53,23 +53,22 @@ TMPFILE=`mktemp /tmp/cookies.sqlite.XXXXXXXXXX`
 handle_buttons(){
 	case "$1" in
 	    1) ( cd "$( dirname "${BASH_SOURCE[0]}" )" > /dev/null 2>&1 && setsid ./mouse-left-click "$2") > /dev/null ;;
-	    3) ( cd "$( dirname "${BASH_SOURCE[0]}" )" > /dev/null 2>&1 && setsid ./mouse-right-click ) > /dev/null ;;
+	    3) ( cd "$( dirname "${BASH_SOURCE[0]}" )" > /dev/null 2>&1 && setsid ./mouse-right-click "$(cat $CACHE_FILE)") > /dev/null ;;
 	esac
 }
 
+handle_buttons $BLOCK_BUTTON
 
 # retrieving the email feed
 feed=$(curl --silent --cookie $TMPFILE https://mail.google.com/mail/feed/atom)
 # donloading the feed | isolating lines that starts with <fullcount> and <title> | removing </title> | transforming &quote in "
 email=$(echo "$feed" | grep -Eo "<fullcount>+[0-9]*</fullcount>|<title>*[[:alpha:],[:punct:],[:space:],[0-9]{0,100}]*</title>" |  sed s/\<title\>//g| sed s/\&quot\;/\"/g);
 
-handle_buttons $BLOCK_BUTTON "$email"
-
-
 n_email="x";
 # getting the number of undread emails
 if [[ $email != "" ]];  then
-      n_email=$(echo $email | grep -o "<fullcount>[0-9]*</fullcount>" | grep -o [0-9]*);
+    n_email=$(echo $email | grep -o "<fullcount>[0-9]*</fullcount>" | grep -o [0-9]*);
+    echo "$email" > $CACHE_FILE
 fi
 
 echo "$n_email"
