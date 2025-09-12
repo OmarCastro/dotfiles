@@ -8,7 +8,6 @@ read -r -d '' CONFIG << EOM
      g     |  Chromium             |  Chromium                  |  chromium
      e     |  Caja file manager    |  Caja                      |  caja
      v     |  Visual Studio Code   |  code-oss                  |  code
-     i     |  Intellij IDEA        |  jetbrains-idea            |  JAVA_HOME=/usr/lib/jvm/java-21-openjdk  ~/apps/idea-IU-222.3739.54/bin/idea.sh
      u     |  Sublime Text         |  Subl                      |  subl
      t     |  Teams                |  Microsoft Teams - Preview |  teams
      p     |  Postman              |  Postman                   |  ~/apps/Postman/Postman
