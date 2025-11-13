@@ -17,7 +17,7 @@ SCRIPTPATH=$(realpath "$0")
 SCRIPTPATH=${SCRIPTPATH%/*}
 
 screenshot_to_clipboard(){
-  import png:- | tee ~/.cache/clipboard-screenshot.png | xclip -selection clipboard -t image/png  
+  import png:- | tee ~/.cache/clipboard-screenshot.png "$(xdg-user-dir PICTURES)/Screenshots/$(date "+%F-%H-%M-%S-%N").png" | xclip -selection clipboard -t image/png  
 }
 
 screencast_to_gif(){
