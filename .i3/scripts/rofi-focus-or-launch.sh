@@ -7,7 +7,7 @@ read -r -d '' CONFIG << EOM
      f     |  Firefox              |  firefox                   |  firefox
      g     |  Chromium             |  Chromium                  |  chromium
      e     |  Caja file manager    |  Caja                      |  caja
-     v     |  VS Codium            |  VSCodium                  |  ~/bin/codium
+     v     |  Vim                  |  st-vim                    |  ~/.i3/scripts/focus-or-create-vim-st.sh
      u     |  Sublime Text         |  Subl                      |  subl
      t     |  Teams                |  Microsoft Teams - Preview |  teams
      p     |  Postman              |  Postman                   |  ~/apps/Postman/Postman

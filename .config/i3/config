@@ -203,6 +203,8 @@ for_window [title="___"] floating enable
 
 assign [class="jetbrains-idea"] → $ws6
 assign [class="code-oss"] → $ws6
+assign [class="VSCodium"] → $ws6
+assign [class="st-vim"] → $ws6
 for_window [class="code-oss"] focus child, layout tabbed, focus
 
 assign [class="Caja"] → $ws7
