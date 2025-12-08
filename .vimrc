@@ -20,6 +20,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'preservim/nerdtree'
 
 Plug 'mbbill/undotree'
+Plug 'mhinz/vim-startify'
 
 call plug#end()
 
@@ -40,6 +41,8 @@ set signcolumn=yes
 
 set ttymouse=xterm2
 set mouse=a
+
+set number relativenumber
 
 " Use tab for trigger completion with characters ahead and navigate.
 " NOTE: There's always complete item selected by default, you may want to enable
@@ -227,6 +230,17 @@ let g:netrw_altv = 1
 let g:netrw_winsize = 25
 let NERDTreeShowHidden=1
 let g:NetrwIsOpen=0
+
+let g:startify_lists = [
+      \ { 'type': 'sessions',  'header': ['   Sessions']       },
+      \ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
+      \ { 'type': 'files',     'header': ['   MRU']            },
+      \ { 'type': 'dir',       'header': ['   MRU '. getcwd()] },
+      \ { 'type': 'commands',  'header': ['   Commands']       },
+      \ ]
+
+let g:startify_custom_indices = ['f', 'g', 'h']
+let g:startify_session_persistence = 1
 
 function! ToggleNetrw()
     if g:NetrwIsOpen
