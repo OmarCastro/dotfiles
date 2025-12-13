@@ -22,6 +22,8 @@ Plug 'preservim/nerdtree'
 Plug 'mbbill/undotree'
 Plug 'mhinz/vim-startify'
 
+Plug 'pangloss/vim-javascript'
+
 call plug#end()
 
 " May need for vim (not neovim) since coc.nvim calculate byte offset by count
@@ -188,8 +190,30 @@ nnoremap <silent> <C-f> :Files<CR>
 " Search content using fzf
 nnoremap <silent><nowait><space>f  :Rg<CR>
 
+command! -nargs=1 Silent
+\   execute 'silent !' . <q-args>
+\ | execute 'redraw!'
+
+" returns true iff is NERDTree open/active
+function! RcIsNerdTreeOpen()
+  return exists("t:NERDTreeBufName") && (bufwinnr(t:NERDTreeBufName) != -1)
+endfunction
+
+" calls NERDTreeFind iff NERDTree is active, current window contains a modifiable file, and we're not in vimdiff
+function! RcSyncNerdTree()
+  if &modifiable && RcIsNerdTreeOpen() && strlen(expand('%')) > 0 && !&diff
+    NERDTreeFind
+    wincmd p
+  endif
+endfunction
+
+autocmd BufEnter * call RcSyncNerdTree()
+
 nnoremap <leader>n :NERDTreeFocus<CR>
 nnoremap <C-t> :NERDTreeToggle<CR>
+nnoremap Ts :Startify<CR>
+nnoremap Tt :call system("~/.i3/scripts/i3-launch-st-from-cwd.sh ". getcwd())<CR>
+nnoremap Tg :Silent lazygit<CR>
 
 nnoremap U :UndotreeToggle<CR>
 
@@ -222,7 +246,7 @@ call EnsureDirExists($HOME . '/.vim/undo')
 set undofile " Maintain undo history between sessions
 set undodir=~/.vim/undo
 
-
+let g:javascript_plugin_jsdoc = 1
 let g:netrw_banner = 0
 let g:netrw_liststyle = 3
 let g:netrw_browse_split = 4
@@ -239,7 +263,7 @@ let g:startify_lists = [
       \ { 'type': 'commands',  'header': ['   Commands']       },
       \ ]
 
-let g:startify_custom_indices = ['f', 'g', 'h']
+let g:startify_custom_indices = ['f', 'g', 'h', 'j']
 let g:startify_session_persistence = 1
 
 function! ToggleNetrw()
