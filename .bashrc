@@ -19,6 +19,39 @@ case $- in
       *) return;;
 esac
 
+export NVM_DIR="$HOME/.nvm"
+
+__load_nvm(){
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm 
+  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+}
+
+__quick_load_node(){
+  if [ -s "$NVM_DIR/alias/default" ]; then
+    local DEFAULT_VERSION="$(ls "$NVM_DIR/versions/node/" | grep "$(cat "$NVM_DIR/alias/default")" | sort -rV | head -1)"
+    local NODE_PATH="$NVM_DIR/versions/node/${DEFAULT_VERSION}/bin"
+    export PATH="$NODE_PATH:$PATH"
+  else
+    # either nvm is not installed or default version is not defined, load nvm normally
+    __load_nvm
+  fi
+}
+
+
+bash_theme_local="dracula"
+bash_theme_ssh="solarized-dark"
+DYNAMIC_COLORS_ROOT="${XDG_DATA_HOME:-$HOME/.local/share}/dynamic-colors"
+if [ ! -d "$DYNAMIC_COLORS_ROOT" ]; then git clone https://github.com/peterhoeg/dynamic-colors "$DYNAMIC_COLORS_ROOT"; fi
+
+# do not load unnecessary resources just to run a single command, also load when requested
+if [[ $- == *c* ]] || [ "$MINIMALLY_LOAD_BASH" == "True" ]; then
+  __quick_load_node
+  export PATH="$HOME/bin:$DYNAMIC_COLORS_ROOT/bin:$PATH"
+  dynamic-colors switch "$bash_theme_local"
+  return
+fi
+
+
 # only run tmux if requested, by setting START_TMUX_FROM_WD_CACHE to true when starting a terminal.
 if [ -z $TMUX ] && [ "$START_TMUX_FROM_WD_CACHE" == "True" ]; then
   export START_TMUX_FROM_WD_CACHE=
@@ -303,3 +336,14 @@ if [ ! -z $TMUX  ] && tmux show-environment BASH_START_FROM_WD_CACHE > /dev/null
     __cache_working_directory
 fi
 unset __cache_working_directory
+
+
+__quick_load_node
+nvm(){
+  unset -f nvm
+  __load_nvm
+  nvm $@
+}
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion again
+
+export PATH="$HOME/bin:$PATH"
