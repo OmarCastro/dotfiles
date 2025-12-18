@@ -23,6 +23,7 @@ Plug 'mbbill/undotree'
 Plug 'mhinz/vim-startify'
 
 Plug 'pangloss/vim-javascript'
+Plug 'editorconfig/editorconfig-vim'
 
 call plug#end()
 
