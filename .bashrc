@@ -35,6 +35,7 @@ __quick_load_node(){
     # either nvm is not installed or default version is not defined, load nvm normally
     __load_nvm
   fi
+  unset __quick_load_node
 }
 
 
@@ -75,9 +76,18 @@ if [ ! -d "$DYNAMIC_COLORS_ROOT" ]; then git clone https://github.com/peterhoeg/
 export PATH="$HOME/bin:$DYNAMIC_COLORS_ROOT/bin:$PATH"
 source $DYNAMIC_COLORS_ROOT/completions/dynamic-colors.bash
 
+if [ -z $VIMRUNTIME ]; then
+
 dynamic-colors(){
     env -u TMUX dynamic-colors "$@"
 }
+
+else
+dynamic-colors(){
+	echo ""
+}
+
+fi
 
 # Apply color theme dyanmically when using a 256 or more colors terminal support
 if [[ $(tput colors) -ge 256 ]] 2>/dev/null; then
