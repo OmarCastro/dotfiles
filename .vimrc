@@ -195,19 +195,29 @@ command! -nargs=1 Silent
 \   execute 'silent !' . <q-args>
 \ | execute 'redraw!'
 
-" returns true iff is NERDTree open/active
+" returns true if is NERDTree is open
 function! RcIsNerdTreeOpen()
   return exists("t:NERDTreeBufName") && (bufwinnr(t:NERDTreeBufName) != -1)
 endfunction
 
-" calls NERDTreeFind iff NERDTree is active, current window contains a modifiable file, and we're not in vimdiff
+" returns true if is NERDTree is open and focused
+function! RcIsNerdTreeActive()
+  return RcIsNerdTreeOpen() && bufname() == t:NERDTreeBufName
+endfunction
+
+" returns true if is NERDTree open but not focused
+function! RcIsNerdTreeOpenAndUnfocused()
+  return RcIsNerdTreeOpen() && bufname() != t:NERDTreeBufName
+endfunction
+
+
+" calls NERDTreeFind if NERDTree is open, current window contains a modifiable file, and we're not in vimdiff
 function! RcSyncNerdTree()
-  if &modifiable && RcIsNerdTreeOpen() && strlen(expand('%')) > 0 && !&diff
+  if &modifiable && RcIsNerdTreeOpenAndUnfocused() && strlen(expand('%')) > 0 && !&diff
     NERDTreeFind
     wincmd p
   endif
 endfunction
-
 autocmd BufEnter * call RcSyncNerdTree()
 
 nnoremap <leader>n :NERDTreeFocus<CR>
