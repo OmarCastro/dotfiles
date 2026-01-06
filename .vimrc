@@ -8,10 +8,16 @@ autocmd VimEnter * ++nested colorscheme gruvbox
 
 call plug#begin()
 
+""" lang server plugin 
+
 " Use release branch (recommend)
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
+""" theme plugin
+
 Plug 'morhetz/gruvbox'
+
+""" Other Plugins
 
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -24,6 +30,7 @@ Plug 'mhinz/vim-startify'
 
 Plug 'pangloss/vim-javascript'
 Plug 'editorconfig/editorconfig-vim'
+Plug 'vim-airline/vim-airline'
 
 call plug#end()
 
