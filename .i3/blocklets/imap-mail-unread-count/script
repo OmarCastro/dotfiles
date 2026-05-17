@@ -1,0 +1,41 @@
+#!/bin/bash
+
+CONFIG_FILE=~/.config/imap-2
+
+CONFIG=$(cat "$CONFIG_FILE" | sed '/^\s*$/d' | tail -n +3 | sed -E 's/[[:blank:]]*(^|\|)[[:blank:]]*/\1/g')
+CACHE_FILE="$HOME/.cache/dotfiles-omarcastro-i3blocklet-imap-mail-feed.runcache"
+
+
+handle_buttons(){
+	case "$1" in
+	    1) ( cd "$( dirname "${BASH_SOURCE[0]}" )" > /dev/null 2>&1 && setsid ./mouse-left-click "$CACHE_FILE") > /dev/null ;;
+	esac
+}
+
+handle_buttons $BLOCK_BUTTON
+
+
+ARRAY=()
+TO_CACHE=()
+for line in $CONFIG; do
+    IFS="|" read -a lineData <<< "$line"
+    ID="${lineData[0]}"
+    HOSTNAME="${lineData[1]}"
+    PORT="${lineData[2]}"
+    USER="${lineData[3]}"
+    PASSWORD="$(pass "${lineData[4]}")"
+    URL="${lineData[5]}"
+    UNREAD_MAILS="$(openssl s_client -crlf -ign_eof -connect "$HOSTNAME:$PORT" 2>/dev/null <<EOF | grep -Po "UNSEEN \K[0-9]+"
+a LOGIN $USER "$PASSWORD"
+a STATUS INBOX (UNSEEN)
+a LOGOUT
+EOF
+)"
+    ARRAY+=("$UNREAD_MAILS")
+    TO_CACHE+=("$ID|$UNREAD_MAILS|$URL")
+done
+
+CACHE_CONTENT="$(IFS=$'\n'; echo "${TO_CACHE[*]}")"
+echo "$CACHE_CONTENT" > $CACHE_FILE
+
+IFS=" " echo "${ARRAY[*]}"

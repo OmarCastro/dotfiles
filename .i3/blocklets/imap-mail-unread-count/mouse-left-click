@@ -1,0 +1,41 @@
+#! /bin/sh
+# Copyright (C) 2025 Omar Castro <omar.castro.360@gmail.com>
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+#------------------------------------------------------------------------
+
+#!/usr/bin/env bash
+
+CONFIG="$(cat $1)"
+
+
+OPTIONS=$(echo "$CONFIG" | awk -F '|' '{print "<b>"$1" |</b> "$2 }' | column -t -s' ')
+WIDTH=$(( $(wc -L <<< "$OPTIONS") + 3 ))
+
+OPTION_CHOSEN="$(echo -e "$OPTIONS" | rofi -markup-rows \
+    -m -3 \
+    -theme-str '#window {anchor:southeast; width: '"${WIDTH}"'ch;} listview { scrollbar: false; }' \
+    -no-fixed-num-lines \
+    -dmenu -line-margin 0 -separator-style none -bw 0  -disable-history)"
+
+OPTION_CHOSEN=$(echo $OPTION_CHOSEN | sed -e 's_[[:blank:]]*|</b>[[:blank:]]*[0-9]*[[:blank:]]*__' -e 's_^<b>__')
+CHOSEN_URL=$(echo "$CONFIG" | awk -F '|' '$1=="'"$OPTION_CHOSEN"'" { print $3 }')
+echo "$CONFIG"
+
+echo "OPTION_CHOSEN = $OPTION_CHOSEN"
+echo "CHOSEN_URL = $CHOSEN_URL"
+
+xdg-open "$CHOSEN_URL"
+
