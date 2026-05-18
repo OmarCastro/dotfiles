@@ -5,6 +5,7 @@ read -r -d '' CONFIG << EOM
   shortcut |  label                |   Window Class             |  execCommand
 -------------------------------------------------------------------------
      f     |  Firefox              |  firefox                   |  firefox
+     l     |  Librewolf            |  librewolf                 |  librewolf
      g     |  Chromium             |  Chromium                  |  chromium
      e     |  Caja file manager    |  Caja                      |  caja
      v     |  Vim                  |  st-vim                    |  ~/.i3/scripts/focus-or-create-vim-st.sh

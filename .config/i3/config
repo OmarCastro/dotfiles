@@ -181,8 +181,15 @@ exec --no-startup-id cmd-polkit-agent -s -c "python $HOME/.i3/scripts/cmd-polkit
 
 for_window [class="firefox"] fullscreen enable, border pixel 0
 for_window [class="firefox" instance="Dialog"] floating enable, border normal
+for_window [class="firefox" window_type=dialog] floating enable, border normal
 for_window [class="firefox"] focus child, layout tabbed, focus
 assign [class="firefox"] $ws1
+
+for_window [class="librewolf"] fullscreen enable, border pixel 0
+for_window [class="librewolf" instance="Dialog"] floating enable, border normal
+for_window [class="librewolf" window_type=dialog] floating enable, border normal
+for_window [class="librewolf"] focus child, layout tabbed, focus
+assign [class="librewolf"] $ws1
 
 assign [class="^URxvt$"] → $ws2
 for_window [class="^URxvt$"] focus child, border pixel 1, focus
