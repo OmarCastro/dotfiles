@@ -4,15 +4,27 @@ CONFIG_FILE=~/.config/imap-2
 
 CONFIG=$(cat "$CONFIG_FILE" | sed '/^\s*$/d' | tail -n +3 | sed -E 's/[[:blank:]]*(^|\|)[[:blank:]]*/\1/g')
 CACHE_FILE="$HOME/.cache/dotfiles-omarcastro-i3blocklet-imap-mail-feed.runcache"
+LOAD_FROM_CACHE=false
 
 
 handle_buttons(){
 	case "$1" in
-	    1) ( cd "$( dirname "${BASH_SOURCE[0]}" )" > /dev/null 2>&1 && setsid ./mouse-left-click "$CACHE_FILE") > /dev/null ;;
+	    1) 
+            ( cd "$( dirname "${BASH_SOURCE[0]}" )" > /dev/null 2>&1 && setsid ./mouse-left-click "$CACHE_FILE") > /dev/null
+            LOAD_FROM_CACHE=true
+            ;;
+        2|3)
+            LOAD_FROM_CACHE=true
+            ;;
 	esac
 }
 
 handle_buttons $BLOCK_BUTTON
+
+if [ "$LOAD_FROM_CACHE" = true ] ; then
+    awk -F '|' '{ print $2 }' $CACHE_FILE | paste -sd " " -
+    exit 0
+fi
 
 
 ARRAY=()
