@@ -6,7 +6,7 @@ import json
 
 remove_1px_and_top_bottom_border=True
 separator_font_descriptions="Roboto Mono for Powerline 15"
-separator_font_space="Roboto Mono for Powerline 2"
+separator_font_space="Roboto Mono for Powerline 5"
 
 # configurations end
 
