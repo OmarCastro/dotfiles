@@ -10,7 +10,7 @@ read -r -d '' CONFIG << EOM
      e     |  Caja file manager    |  Caja                      |  caja
      v     |  Vim                  |  st-vim                    |  ~/.i3/scripts/focus-or-create-vim-st.sh
      u     |  Sublime Text         |  Subl                      |  subl
-     t     |  Teams                |  Microsoft Teams - Preview |  teams
+     c     |  Codium               |  codium                    |  ~/bin/codium
      p     |  Postman              |  Postman                   |  ~/apps/Postman/Postman
      d     |  Discord              |  discord                   |  discord
      m     |  Robo Mongo 3T        |  robo3t                    |  ~/apps/robo3t-1.2.1-linux-x86_64-3e50a65/bin/robo3t
